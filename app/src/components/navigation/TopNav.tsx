@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Gamepad2, Flame, Terminal, BookOpen, Home } from 'lucide-react';
+import { Gamepad2, Flame, Terminal, BookOpen, Home, Twitter, Github } from 'lucide-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { isLocalEnvironment } from '../../utils/isLocal';
 
@@ -59,7 +59,25 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
           ))}
         </div>
 
-        <WalletMultiButton className="wallet-adapter-button-trigger" />
+        <div className="flex items-center gap-3">
+          <a 
+            href="https://x.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all"
+          >
+            <Twitter className="w-4 h-4" />
+          </a>
+          <a 
+            href="https://github.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all"
+          >
+            <Github className="w-4 h-4" />
+          </a>
+          <WalletMultiButton className="wallet-adapter-button-trigger" />
+        </div>
       </div>
     </nav>
   );
