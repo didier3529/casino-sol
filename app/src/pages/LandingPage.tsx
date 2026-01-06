@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { 
-  ArrowRight, Gamepad2, Shield, Zap, Lock, Twitter, Github, MessageCircle
+  ArrowRight, Gamepad2, Shield, Zap, Lock
 } from 'lucide-react';
 import { TabType } from '../components/navigation/TopNav';
 
@@ -118,29 +118,28 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
         </div>
       </section>
 
-      <footer className="relative z-10 py-8 border-t border-white/5 bg-background/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <footer className="relative z-10 py-8 border-t border-white/5 bg-background-secondary/50">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-accent to-gold flex items-center justify-center">
-              <span className="text-black font-bold text-xs font-display">SV</span>
+            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-accent to-gold flex items-center justify-center">
+              <span className="text-black font-bold text-[10px] font-display">SV</span>
             </div>
-            <span className="font-display font-semibold text-white text-sm">SOL VEGAS</span>
+            <span className="font-display font-medium text-white/60 text-xs">SOL VEGAS</span>
           </div>
 
           <div className="text-xs text-white/30 font-body">
-            2024 Sol Vegas. All rights reserved.
+            2026 Sol Vegas. All rights reserved.
           </div>
 
-          <div className="flex gap-4">
-            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
-              <Twitter className="w-4 h-4" />
-            </a>
-            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
-              <MessageCircle className="w-4 h-4" />
-            </a>
-            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
-              <Github className="w-4 h-4" />
-            </a>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-xs">
+              <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+              <span className="text-white/40 font-display">Solana Mainnet</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-white/40">
+              <Shield className="w-3 h-3" />
+              <span className="font-display">Provably Fair</span>
+            </div>
           </div>
         </div>
       </footer>
