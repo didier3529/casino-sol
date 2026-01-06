@@ -10,7 +10,7 @@ import { HowItWorksPage } from './pages/HowItWorksPage';
 import { PROGRAM_ID, NETWORK } from './utils/constants';
 import { useCasino } from './hooks/useCasino';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CheckCircle, Vault, Landmark, ExternalLink, Twitter, Github } from 'lucide-react';
+import { CheckCircle, Vault, Landmark, ExternalLink, Shield } from 'lucide-react';
 
 type AppView = 'landing' | 'app';
 
@@ -145,16 +145,18 @@ const App: FC = () => {
                 </div>
 
                 <div className="text-xs text-white/30 font-body">
-                  2024 Sol Vegas. All rights reserved.
+                  2026 Sol Vegas. All rights reserved.
                 </div>
 
-                <div className="flex gap-3">
-                  <a href="#" className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
-                    <Twitter className="w-3.5 h-3.5" />
-                  </a>
-                  <a href="#" className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
-                    <Github className="w-3.5 h-3.5" />
-                  </a>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+                    <span className="text-white/40 font-display">Solana Mainnet</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-white/40">
+                    <Shield className="w-3 h-3" />
+                    <span className="font-display">Provably Fair</span>
+                  </div>
                 </div>
               </div>
             </footer>
