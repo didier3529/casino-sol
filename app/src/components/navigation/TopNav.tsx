@@ -72,7 +72,7 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
         </div>
 
         {/* Wallet Button */}
-        <WalletMultiButton className="!bg-white/5 hover:!bg-white/10 !border !border-white/10 !text-sm !font-medium !rounded-full !transition-all !duration-300" />
+        <WalletMultiButton className="wallet-adapter-button-trigger" />
       </div>
     </nav>
   );
