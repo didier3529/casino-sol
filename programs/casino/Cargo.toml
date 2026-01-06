@@ -1,0 +1,30 @@
+[package]
+name = "casino"
+version = "0.1.0"
+description = "Solana CoinFlip Casino with Switchboard VRF"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "casino"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+# Mock VRF for localnet testing (feature-gated for safety)
+mock-vrf = []
+
+[dependencies]
+anchor-lang = "0.28.0"
+
+# Reduce SBF binary size so we can upgrade the existing devnet ProgramData allocation.
+# (Devnet ProgramData is currently 340,536 bytes; upgrades fail if the new .so is larger.)
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"

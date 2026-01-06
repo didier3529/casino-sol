@@ -1,0 +1,45 @@
+{
+  "name": "solana-casino-coinflip",
+  "version": "2.0.0",
+  "description": "Provably fair coin flip casino on Solana",
+  "scripts": {
+    "test": "anchor test",
+    "build": "anchor build",
+    "deploy:localnet": "anchor deploy --provider.cluster localnet",
+    "deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "init-casino": "tsx scripts/init-casino.ts",
+    "place-bet": "tsx scripts/place-bet.ts",
+    "fulfill": "tsx scripts/fulfill-mock-vrf.ts",
+    "e2e-loop": "tsx scripts/e2e-loop.ts",
+    "relayer:devnet": "tsx scripts/relayer-devnet.ts",
+    "keys:sync": "anchor keys sync",
+    "keys:list": "anchor keys list",
+    "frontend:dev": "cd app && npm run dev",
+    "frontend:build": "cd app && npm run build",
+    "frontend:install": "cd app && npm install",
+    "validator:start": "solana-test-validator --reset",
+    "quick-start": "npm run build && npm run keys:sync && npm run deploy:localnet && npm run init-casino",
+    "test:e2e": "npm run e2e-loop"
+  },
+  "devDependencies": {
+    "@coral-xyz/anchor": "^0.29.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
+    "chai": "^4.3.0",
+    "mocha": "^10.0.0",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "casino",
+    "coinflip",
+    "blockchain",
+    "defi"
+  ],
+  "author": "Casino Dev Team",
+  "license": "MIT"
+}
