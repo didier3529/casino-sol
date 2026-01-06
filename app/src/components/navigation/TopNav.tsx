@@ -71,7 +71,7 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
             </svg>
           </a>
           <a 
-            href="https://github.com" 
+            href="https://github.com/didier3529/casino-sol" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all"
