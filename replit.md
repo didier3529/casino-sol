@@ -54,6 +54,13 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - `.font-display` / `.font-body` - Typography utilities
 
 ## Recent Changes
+- 2026-01-06: Final Polish Pass
+  - StatusBar component: Live network badge, Vault/Treasury balances, Solscan link
+  - CA badge on landing page (pump.fun style, shows "Coming Soon")
+  - Social links (X, GitHub) in app footer
+  - Game cards: larger icons, "Coming Soon" badges for Dice/Slots
+  - Consistent headers: clean bold white text (removed gradients for consistency)
+  - Fixed StatusBar error handling for wallet/program availability
 - 2026-01-06: Complete UI Redesign
   - Implemented sophisticated design system with Space Grotesk/Manrope fonts
   - New color palette: obsidian backgrounds, cyan accent, warm gold
