@@ -35,9 +35,13 @@ const App: FC = () => {
           currentView={appView}
           onGoHome={handleGoHome}
           onTabChange={(tab) => {
-            setActiveTab(tab);
-            if (appView === 'landing') {
-              setAppView('app');
+            if (tab === 'home') {
+              setAppView('landing');
+            } else {
+              setActiveTab(tab);
+              if (appView === 'landing') {
+                setAppView('app');
+              }
             }
           }}
         />

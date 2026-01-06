@@ -1,9 +1,9 @@
 import { FC } from 'react';
-import { Gamepad2, Flame, Terminal, BookOpen } from 'lucide-react';
+import { Gamepad2, Flame, Terminal, BookOpen, Home } from 'lucide-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { isLocalEnvironment } from '../../utils/isLocal';
 
-export type TabType = 'games' | 'how' | 'buyback' | 'developer';
+export type TabType = 'home' | 'games' | 'how' | 'buyback' | 'developer';
 export type TopNavView = 'landing' | 'app';
 
 interface TopNavProps {
@@ -17,6 +17,7 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
   const showDeveloper = isLocalEnvironment();
 
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+    { id: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
     { id: 'games', label: 'Games', icon: <Gamepad2 className="w-4 h-4" /> },
     { id: 'how', label: 'How it works', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'buyback', label: 'Buyback & Burn', icon: <Flame className="w-4 h-4" /> },
