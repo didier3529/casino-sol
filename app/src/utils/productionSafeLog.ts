@@ -1,0 +1,80 @@
+/**
+ * Production-safe logging utilities
+ * 
+ * These utilities prevent sensitive data (wallet addresses, PDAs, internal errors)
+ * from being logged to the browser console in production builds.
+ */
+
+/**
+ * Check if we're in development mode
+ */
+function isDev(): boolean {
+  return import.meta.env.DEV;
+}
+
+/**
+ * Log general information (only in dev mode)
+ */
+export function devLog(message: string, ...args: any[]): void {
+  if (isDev()) {
+    console.log(message, ...args);
+  }
+}
+
+/**
+ * Log errors (generic in production, detailed in dev)
+ */
+export function safeError(message: string, error?: any): void {
+  if (isDev()) {
+    console.error(message, error);
+  } else {
+    // In production, only log generic error
+    console.error('An error occurred');
+  }
+}
+
+/**
+ * Log warnings (only in dev)
+ */
+export function devWarn(message: string, ...args: any[]): void {
+  if (isDev()) {
+    console.warn(message, ...args);
+  }
+}
+
+/**
+ * Redact sensitive information from strings (wallet addresses, signatures)
+ */
+export function redactSensitive(text: string): string {
+  if (isDev()) {
+    return text; // Show everything in dev
+  }
+  
+  // In production, redact base58 addresses (likely wallet/PDA addresses)
+  return text.replace(/[1-9A-HJ-NP-Za-km-z]{32,44}/g, '<redacted>');
+}
+
+/**
+ * Safe transaction success log
+ */
+export function logTransactionSuccess(action: string, signature: string, details?: Record<string, any>): void {
+  if (isDev()) {
+    console.log(`✓ ${action} successful:`, signature, details);
+  } else {
+    console.log(`Transaction successful`);
+  }
+}
+
+/**
+ * Safe transaction error log
+ */
+export function logTransactionError(action: string, error: any): void {
+  if (isDev()) {
+    console.error(`✗ ${action} failed:`, error);
+  } else {
+    console.error('Transaction failed');
+  }
+}
+/**
+ * Log general information (only in dev mode)
+ */

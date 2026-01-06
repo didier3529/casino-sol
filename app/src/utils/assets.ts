@@ -1,0 +1,69 @@
+/**
+ * Centralized asset path management
+ * Makes it easy to swap asset packs without editing every component
+ */
+
+const ASSETS_BASE = '/assets';
+
+export const Assets = {
+  images: {
+    slots: `${ASSETS_BASE}/images/slots.png`,
+    slotsOld: `${ASSETS_BASE}/images/slots-old.png`,
+    // Add more images as needed
+  },
+  
+  audio: {
+    // Placeholder paths for when we add audio files
+    spinLoop: `${ASSETS_BASE}/audio/spin-loop.mp3`,
+    spinStop: `${ASSETS_BASE}/audio/spin-stop.mp3`,
+    winSmall: `${ASSETS_BASE}/audio/win-small.mp3`,
+    winBig: `${ASSETS_BASE}/audio/win-big.mp3`,
+    winJackpot: `${ASSETS_BASE}/audio/win-jackpot.mp3`,
+    click: `${ASSETS_BASE}/audio/click.mp3`,
+    coinDrop: `${ASSETS_BASE}/audio/coin-drop.mp3`,
+    // Add more audio as needed
+  },
+  
+  models: {
+    // Placeholder paths for 3D models (Phase 2)
+    slotMachine: `${ASSETS_BASE}/models/slot-machine.glb`,
+    coin: `${ASSETS_BASE}/models/coin.glb`,
+    dice: `${ASSETS_BASE}/models/dice.glb`,
+    // Add more models as needed
+  },
+} as const;
+
+/**
+ * Helper to preload images
+ */
+export const preloadImage = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = reject;
+    img.src = src;
+  });
+};
+
+/**
+ * Preload multiple images
+ */
+export const preloadImages = async (srcs: string[]): Promise<void[]> => {
+  return Promise.all(srcs.map(preloadImage));
+};
+
+/**
+ * Helper to check if an asset exists (useful for optional assets)
+ */
+export const assetExists = async (src: string): Promise<boolean> => {
+  try {
+    const response = await fetch(src, { method: 'HEAD' });
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+
+
+
+
