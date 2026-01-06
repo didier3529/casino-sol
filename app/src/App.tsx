@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { WalletProvider } from './components/WalletProvider';
 import { TopNav, TabType } from './components/navigation/TopNav';
@@ -7,9 +7,80 @@ import { BuybackPage } from './pages/BuybackPage';
 import { DeveloperPage } from './pages/DeveloperPage';
 import { LandingPage } from './pages/LandingPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
-import { PROGRAM_ID, NETWORK, getClusterUrl } from './utils/constants';
+import { PROGRAM_ID, NETWORK } from './utils/constants';
+import { useCasino } from './hooks/useCasino';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { CheckCircle, Vault, Landmark, ExternalLink, Twitter, Github } from 'lucide-react';
 
 type AppView = 'landing' | 'app';
+
+const StatusBar: FC = () => {
+  const { fetchVaultBalance, fetchCasino, program } = useCasino();
+  const { connected } = useWallet();
+  const [vaultBalance, setVaultBalance] = useState<number | null>(null);
+  const [treasuryBalance, setTreasuryBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    const loadBalances = async () => {
+      if (!program) return;
+      
+      try {
+        const vault = await fetchVaultBalance();
+        if (typeof vault === 'number') {
+          setVaultBalance(vault / 1e9);
+        }
+        
+        const casino = await fetchCasino();
+        if (casino && (casino as any).treasuryBalance) {
+          setTreasuryBalance(Number((casino as any).treasuryBalance) / 1e9);
+        }
+      } catch {
+        // Silently fail - balances will show as ---
+      }
+    };
+    
+    loadBalances();
+    const interval = setInterval(loadBalances, 30000);
+    return () => clearInterval(interval);
+  }, [program, connected]);
+
+  return (
+    <div className="flex flex-wrap items-center gap-4 mb-8">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-success/20 bg-success/5">
+        <CheckCircle className="w-3.5 h-3.5 text-success" />
+        <span className="text-xs font-display font-medium text-success">Live on {NETWORK}</span>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5">
+          <Vault className="w-3.5 h-3.5 text-accent" />
+          <span className="text-xs text-white/50 font-display">Vault:</span>
+          <span className="text-xs font-mono text-white font-medium">
+            {vaultBalance !== null ? `${vaultBalance.toFixed(2)} SOL` : '---'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5">
+          <Landmark className="w-3.5 h-3.5 text-gold" />
+          <span className="text-xs text-white/50 font-display">Treasury:</span>
+          <span className="text-xs font-mono text-white font-medium">
+            {treasuryBalance !== null ? `${treasuryBalance.toFixed(4)} SOL` : '---'}
+          </span>
+        </div>
+      </div>
+
+      <a 
+        href={`https://solscan.io/account/${PROGRAM_ID.toBase58()}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 text-xs text-white/30 hover:text-accent transition-colors font-mono"
+      >
+        <span>{PROGRAM_ID.toBase58().slice(0, 4)}...{PROGRAM_ID.toBase58().slice(-4)}</span>
+        <ExternalLink className="w-3 h-3" />
+      </a>
+    </div>
+  );
+};
 
 const App: FC = () => {
   const [appView, setAppView] = useState<AppView>('landing');
@@ -54,24 +125,7 @@ const App: FC = () => {
         ) : (
           <>
             <main className="max-w-7xl mx-auto px-6 pt-20 pb-12">
-              <div className="glass-card px-5 py-3 mb-8 inline-flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/40 font-display">Network</span>
-                  <span className="text-xs text-accent font-display font-semibold uppercase">{NETWORK}</span>
-                </div>
-                <div className="w-px h-4 bg-white/10" />
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/40 font-display">RPC</span>
-                  <span className="text-xs text-white/50 font-mono">{getClusterUrl().slice(0, 30)}...</span>
-                </div>
-                <div className="w-px h-4 bg-white/10" />
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/40 font-display">Program</span>
-                  <span className="text-xs text-white/50 font-mono">
-                    {PROGRAM_ID.toBase58().slice(0, 6)}...{PROGRAM_ID.toBase58().slice(-6)}
-                  </span>
-                </div>
-              </div>
+              <StatusBar />
 
               <div className="mt-6">
                 {activeTab === 'games' && <GamesPage />}
@@ -82,11 +136,25 @@ const App: FC = () => {
             </main>
 
             <footer className="py-8 border-t border-white/5 bg-background-secondary/50">
-              <div className="max-w-7xl mx-auto px-6 text-center">
-                <div className="text-xs text-white/30 font-body space-x-4">
-                  <span>Network: <span className="text-accent font-medium">{NETWORK}</span></span>
-                  <span>|</span>
-                  <span className="font-mono">{PROGRAM_ID.toBase58().slice(0, 8)}...{PROGRAM_ID.toBase58().slice(-8)}</span>
+              <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-md bg-gradient-to-br from-accent to-gold flex items-center justify-center">
+                    <span className="text-black font-bold text-[10px] font-display">SV</span>
+                  </div>
+                  <span className="font-display font-medium text-white/60 text-xs">SOL VEGAS</span>
+                </div>
+
+                <div className="text-xs text-white/30 font-body">
+                  2024 Sol Vegas. All rights reserved.
+                </div>
+
+                <div className="flex gap-3">
+                  <a href="#" className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+                    <Twitter className="w-3.5 h-3.5" />
+                  </a>
+                  <a href="#" className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+                    <Github className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               </div>
             </footer>

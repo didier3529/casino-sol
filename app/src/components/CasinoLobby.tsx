@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Coins, Dices, GalleryVerticalEnd } from 'lucide-react';
+import { Coins, Dices, GalleryVerticalEnd, Clock } from 'lucide-react';
 
 interface GameCardProps {
   title: string;
@@ -7,10 +7,11 @@ interface GameCardProps {
   description: string;
   rtp: string;
   accent: 'accent' | 'gold' | 'error';
+  comingSoon?: boolean;
   onClick: () => void;
 }
 
-const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, onClick }) => {
+const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, comingSoon, onClick }) => {
   const accentColors = {
     accent: {
       bg: 'bg-accent-muted',
@@ -36,25 +37,35 @@ const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, on
 
   return (
     <div 
-      className={`surface-elevated p-6 cursor-pointer transition-all duration-300 group ${colors.border} ${colors.glow}`}
-      onClick={onClick}
+      className={`surface-elevated p-6 transition-all duration-300 group ${colors.border} ${colors.glow} ${comingSoon ? 'opacity-60' : 'cursor-pointer'}`}
+      onClick={comingSoon ? undefined : onClick}
     >
-      <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center ${colors.text} mb-5 group-hover:scale-105 transition-transform`}>
+      {comingSoon && (
+        <div className="flex items-center gap-1.5 mb-4 px-2 py-1 bg-white/5 rounded-md w-fit">
+          <Clock className="w-3 h-3 text-white/40" />
+          <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-wider">Coming Soon</span>
+        </div>
+      )}
+      
+      <div className={`w-14 h-14 rounded-xl ${colors.bg} flex items-center justify-center ${colors.text} mb-5 group-hover:scale-105 transition-transform`}>
         {icon}
       </div>
       
-      <h3 className="text-lg font-display font-semibold text-white mb-2">{title}</h3>
+      <h3 className="text-xl font-display font-semibold text-white mb-2">{title}</h3>
       
       <p className="text-sm text-white/40 font-body mb-6 leading-relaxed">
         {description}
       </p>
 
       <div className="flex items-center justify-between">
-        <span className="text-xs font-mono text-white/30 bg-white/5 px-2 py-1 rounded">
+        <span className="text-xs font-mono text-white/30 bg-white/5 px-2.5 py-1 rounded-md">
           {rtp}
         </span>
-        <button className={`${colors.bg} ${colors.text} text-sm font-display font-semibold px-4 py-2 rounded-lg transition-all hover:opacity-80`}>
-          Play
+        <button 
+          className={`${colors.bg} ${colors.text} text-sm font-display font-semibold px-5 py-2.5 rounded-lg transition-all ${comingSoon ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+          disabled={comingSoon}
+        >
+          {comingSoon ? 'Soon' : 'Play'}
         </button>
       </div>
     </div>
@@ -70,26 +81,29 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
     {
       id: 'coinflip' as const,
       title: 'CoinFlip',
-      icon: <Coins className="w-6 h-6" />,
+      icon: <Coins className="w-7 h-7" />,
       description: 'Double or nothing. 50/50 odds powered by Switchboard VRF.',
       rtp: 'RTP 99.0%',
       accent: 'accent' as const,
+      comingSoon: false,
     },
     {
       id: 'dice' as const,
       title: 'Neon Dice',
-      icon: <Dices className="w-6 h-6" />,
+      icon: <Dices className="w-7 h-7" />,
       description: 'Set your win chance and multiplier. Classic slider dice game.',
       rtp: 'RTP 99.0%',
       accent: 'gold' as const,
+      comingSoon: true,
     },
     {
       id: 'slots' as const,
       title: 'Cyber Slots',
-      icon: <GalleryVerticalEnd className="w-6 h-6" />,
+      icon: <GalleryVerticalEnd className="w-7 h-7" />,
       description: 'Jackpot potential. Spin to match symbols on the blockchain.',
       rtp: 'RTP 96.5%',
       accent: 'error' as const,
+      comingSoon: true,
     },
   ];
 
@@ -103,6 +117,7 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
           description={game.description}
           rtp={game.rtp}
           accent={game.accent}
+          comingSoon={game.comingSoon}
           onClick={() => onSelectGame(game.id)}
         />
       ))}

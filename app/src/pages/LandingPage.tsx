@@ -67,10 +67,17 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
             <span className="block text-gradient">On-Chain Gaming</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-12 leading-relaxed font-body animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-8 leading-relaxed font-body animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             Experience the first fully non-custodial casino on Solana. 
             Verifiable randomness, instant settlements, and direct-to-wallet payouts.
           </p>
+
+          <div className="flex items-center justify-center gap-2 mb-10 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+            <span className="text-xs text-white/40 font-display uppercase tracking-wider">CA:</span>
+            <span className="text-xs font-mono text-white/50 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+              Coming Soon
+            </span>
+          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <button

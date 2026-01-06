@@ -12,7 +12,7 @@ export const BuybackPage: FC = () => {
     <div className="max-w-6xl mx-auto py-6 space-y-8">
       <div className="text-center mb-10">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">
-          <span className="text-gradient-gold">Buyback & Burn</span>
+          Buyback & Burn
         </h1>
         <p className="text-white/50 text-lg font-body">
           Deflationary mechanics powered by casino revenue

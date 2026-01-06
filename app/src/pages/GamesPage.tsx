@@ -20,7 +20,7 @@ export const GamesPage: FC = () => {
         <>
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">
-              <span className="text-gradient">Casino Lobby</span>
+              Casino Lobby
             </h1>
             <p className="text-white/50 text-lg font-body">
               Select a game to start playing on-chain
