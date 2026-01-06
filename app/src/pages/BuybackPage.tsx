@@ -9,165 +9,121 @@ export const BuybackPage: FC = () => {
   const isOperator = isOperatorPublicKey(publicKey);
 
   return (
-    <div className="max-w-7xl mx-auto py-8 space-y-8">
-      {/* Page Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-2">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-ruby">
-            Buyback & Burn
-          </span>
+    <div className="max-w-6xl mx-auto py-6 space-y-8">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">
+          <span className="text-gradient-gold">Buyback & Burn</span>
         </h1>
-        <p className="text-slate-400 text-lg">
-          Deflationary mechanics powered by casino revenue.
+        <p className="text-white/50 text-lg font-body">
+          Deflationary mechanics powered by casino revenue
         </p>
       </div>
 
-      {/* Public Information Section */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Mechanism Overview */}
-        <div className="glass-panel rounded-xl border border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-            <BarChart2 className="w-6 h-6 text-brand-purple" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-display font-semibold text-white mb-4 flex items-center gap-2">
+            <BarChart2 className="w-5 h-5 text-accent" />
             <span>Mechanism Overview</span>
           </h3>
-          <div className="space-y-4 text-slate-400">
+          <div className="space-y-4 text-white/50 font-body text-sm leading-relaxed">
             <p>
-              The Sol Vegas Buyback & Burn protocol is designed to create continuous
-              deflationary pressure on the native token. A portion of the house
-              edge from every game played is automatically directed to a treasury.
+              The Sol Vegas Buyback & Burn protocol creates continuous
+              deflationary pressure on the native token.
             </p>
             <p>
-              When the treasury balance exceeds a predefined threshold, the system
-              initiates an automated buyback. It uses the accumulated SOL to purchase
-              the native token from the open market via Jupiter Aggregator or Pump.fun.
+              A portion of the house edge from every game is directed to a treasury.
+              When the balance exceeds a threshold, the system initiates an automated buyback.
             </p>
             <p>
-              Immediately after the buyback, the purchased tokens are sent to a burn
-              address, permanently removing them from circulation. This reduces the
-              total supply, benefiting existing token holders by increasing scarcity.
+              Purchased tokens are immediately sent to a burn address, permanently
+              removing them from circulation.
             </p>
           </div>
         </div>
 
-        {/* Benefits */}
-        <div className="p-6 glass-panel rounded-xl border border-white/10">
-          <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-            <Gem className="w-6 h-6 text-brand-gold" />
-            <span>Benefits for Token Holders</span>
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-display font-semibold text-white mb-4 flex items-center gap-2">
+            <Gem className="w-5 h-5 text-gold" />
+            <span>Benefits for Holders</span>
           </h3>
-          <div className="space-y-2 text-slate-400">
-            <p>
-              <Flame className="inline-block w-4 h-4 mr-2 text-brand-accent" /> <strong className="text-brand-accent">Deflationary Pressure</strong>: Continuous token burns reduce supply over time
-            </p>
-            <p>
-              <Flame className="inline-block w-4 h-4 mr-2 text-brand-accent" /> <strong className="text-brand-accent">Price Support</strong>: Automated buying creates consistent demand
-            </p>
-            <p>
-              <Flame className="inline-block w-4 h-4 mr-2 text-brand-accent" /> <strong className="text-brand-accent">Revenue Share</strong>: House profits directly benefit token holders
-            </p>
-            <p>
-              <Flame className="inline-block w-4 h-4 mr-2 text-brand-accent" /> <strong className="text-brand-accent">Sustainable</strong>: Powered by real casino revenue, not external funding
-            </p>
+          <div className="space-y-3 text-sm font-body">
+            {[
+              { label: 'Deflationary Pressure', desc: 'Continuous token burns reduce supply' },
+              { label: 'Price Support', desc: 'Automated buying creates consistent demand' },
+              { label: 'Revenue Share', desc: 'House profits directly benefit holders' },
+              { label: 'Sustainable', desc: 'Powered by real casino revenue' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <Flame className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-accent font-medium">{item.label}:</span>{' '}
+                  <span className="text-white/50">{item.desc}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* How It Works - Process Flow */}
-      <div className="max-w-6xl mx-auto">
-        <div className="glass-panel rounded-xl border border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <ArrowRightLeft className="w-6 h-6 text-brand-emerald" />
-            <span>How It Works</span>
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-purple mb-2">1. Revenue Collection</div>
-              <div className="text-sm text-slate-400">
-                House edge from every bet is allocated to the treasury account
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-display font-semibold text-white mb-5 flex items-center gap-2">
+          <ArrowRightLeft className="w-5 h-5 text-success" />
+          <span>How It Works</span>
+        </h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { step: '1', title: 'Revenue Collection', desc: 'House edge allocated to treasury', color: 'accent' },
+            { step: '2', title: 'Automated Buyback', desc: 'Bot executes swaps via Pump.fun or Jupiter', color: 'gold' },
+            { step: '3', title: 'Token Burn', desc: 'Purchased tokens immediately burned', color: 'error' },
+            { step: '4', title: 'Price Impact', desc: 'Reduced supply + demand = upward pressure', color: 'success' },
+          ].map((item, i) => (
+            <div key={i} className="surface-elevated p-4">
+              <div className={`text-${item.color} font-display font-semibold text-sm mb-2`}>
+                {item.step}. {item.title}
               </div>
+              <div className="text-xs text-white/40 font-body">{item.desc}</div>
             </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-purple mb-2">2. Automated Buyback</div>
-              <div className="text-sm text-slate-400">
-                Bot executes swaps via Pump.fun (bonding curve) or Jupiter (DEX)
-              </div>
-            </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-ruby mb-2">3. Token Burn</div>
-              <div className="text-sm text-slate-400">
-                Purchased tokens are immediately burned, reducing total supply
-              </div>
-            </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-emerald mb-2">4. Price Impact</div>
-              <div className="text-sm text-slate-400">
-                Reduced supply + consistent demand = upward price pressure
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Safety Features */}
-      <div className="max-w-6xl mx-auto">
-        <div className="glass-panel rounded-xl border border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-brand-emerald" />
-            <span>Safety Features</span>
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-emerald mb-1">Protected Vault</div>
-              <div className="text-sm text-slate-400">
-                0.5 SOL always reserved for gameplay liquidity
-              </div>
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-display font-semibold text-white mb-5 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-success" />
+          <span>Safety Features</span>
+        </h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { title: 'Protected Vault', desc: '0.5 SOL always reserved for gameplay' },
+            { title: 'Transparent', desc: 'All transactions logged and auditable' },
+            { title: 'Kill Switch', desc: 'Can be paused by casino authority' },
+            { title: 'Price Protection', desc: 'Slippage limits and price validation' },
+          ].map((item, i) => (
+            <div key={i} className="surface-elevated p-4">
+              <div className="text-success font-display font-medium text-sm mb-1">{item.title}</div>
+              <div className="text-xs text-white/40 font-body">{item.desc}</div>
             </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-emerald mb-1">Transparent</div>
-              <div className="text-sm text-slate-400">
-                All buyback transactions logged and auditable
-              </div>
-            </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-emerald mb-1">Kill Switch</div>
-              <div className="text-sm text-slate-400">
-                Can be paused/resumed by casino authority
-              </div>
-            </div>
-            <div className="p-4 glass-panel rounded-lg border border-white/10">
-              <div className="font-semibold text-brand-emerald mb-1">Price Protection</div>
-              <div className="text-sm text-slate-400">
-                Slippage limits and price impact validation
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Operator Controls (if authorized) */}
       {publicKey && isOperator && (
-        <div className="max-w-6xl mx-auto">
-          <div className="glass-panel rounded-xl border border-white/10 p-6">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Wallet className="w-6 h-6 text-brand-accent" />
-              <span>Operator Controls</span>
-            </h3>
-            <BuybackPanel />
-          </div>
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-display font-semibold text-white mb-5 flex items-center gap-2">
+            <Wallet className="w-5 h-5 text-accent" />
+            <span>Operator Controls</span>
+          </h3>
+          <BuybackPanel />
         </div>
       )}
 
-      {/* Coming Soon (if not connected or not operator) */}
       {(!publicKey || !isOperator) && (
-        <div className="max-w-4xl mx-auto">
-          <div className="glass-panel rounded-xl p-6 text-center border border-white/10">
-            <div className="text-slate-500 text-sm">
-              💡 Buyback statistics and real-time events will be displayed here once the system is active
-            </div>
-          </div>
+        <div className="glass-card p-6 text-center">
+          <p className="text-white/40 text-sm font-body">
+            Buyback statistics and real-time events will be displayed here once the system is active
+          </p>
         </div>
       )}
     </div>
   );
 };
-

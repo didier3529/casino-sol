@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Gem, Gamepad2, Flame, Terminal, Home, BookOpen } from 'lucide-react';
+import { Gamepad2, Flame, Terminal, BookOpen } from 'lucide-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { isLocalEnvironment } from '../../utils/isLocal';
 
@@ -27,41 +27,28 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
   }
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass-nav h-16 transition-all duration-300">
+    <nav className="fixed top-0 w-full z-50 glass-nav h-14 transition-all duration-300">
       <div className="flex h-full max-w-7xl mx-auto px-6 items-center justify-between">
-        {/* Logo - Clickable to return home */}
         <button
           onClick={onGoHome}
-          className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2.5 group cursor-pointer hover:opacity-80 transition-opacity"
         >
-          <div className="w-8 h-8 rounded bg-gradient-to-br from-brand-accent to-blue-600 flex items-center justify-center">
-            <Gem className="w-5 h-5 text-black" />
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-gold flex items-center justify-center">
+            <span className="text-black font-bold text-sm font-display">SV</span>
           </div>
-          <span className="font-bold text-white text-lg">SOL VEGAS</span>
+          <span className="font-display font-semibold text-white text-base tracking-tight">SOL VEGAS</span>
         </button>
 
-        {/* Center Navigation */}
-        <div className="flex-1 flex items-center justify-center gap-2">
-          {/* Home Button */}
-          {onGoHome && (
-            <button
-              onClick={onGoHome}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5"
-            >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
-            </button>
-          )}
-          
+        <div className="flex-1 flex items-center justify-center gap-1">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={`
-                px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2
+                px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 font-display
                 ${currentView !== 'landing' && activeTab === tab.id
-                  ? 'bg-white/10 text-white border border-white/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-accent/10 text-accent border border-accent/20'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
                 }
               `}
             >
@@ -71,10 +58,8 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
           ))}
         </div>
 
-        {/* Wallet Button */}
         <WalletMultiButton className="wallet-adapter-button-trigger" />
       </div>
     </nav>
   );
 };
-

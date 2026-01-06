@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { 
-  ArrowRight, Gamepad2, Gem, Twitter, Github, Terminal
+  ArrowRight, Gamepad2, Shield, Zap, Lock, Twitter, Github, MessageCircle
 } from 'lucide-react';
 import { TabType } from '../components/navigation/TopNav';
 
@@ -20,40 +20,62 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
     onNavigateToTab('games');
   };
 
+  const features = [
+    {
+      icon: <Shield className="w-5 h-5" />,
+      title: 'Provably Fair',
+      description: 'Every outcome verified on-chain with cryptographic proofs'
+    },
+    {
+      icon: <Zap className="w-5 h-5" />,
+      title: 'Instant Payouts',
+      description: 'Winnings sent directly to your wallet in seconds'
+    },
+    {
+      icon: <Lock className="w-5 h-5" />,
+      title: 'Non-Custodial',
+      description: 'Your funds stay in your wallet until you play'
+    }
+  ];
+
   return (
     <div className="relative min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <section className="overflow-hidden md:pt-48 z-10 pt-36 px-6 pb-32 relative">
-        <div className="flex flex-col z-20 text-center max-w-full mx-auto items-center">
-          {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-accent/20 bg-brand-accent/5 text-brand-accent text-xs font-semibold tracking-wide mb-8 animate-fade-in-up">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="video-background"
+        poster="/assets/images/casino-poster.jpg"
+      >
+        <source src="/assets/videos/casino-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="video-overlay" />
+
+      <section className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-24 pb-32">
+        <div className="flex flex-col text-center max-w-4xl mx-auto items-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold tracking-wider mb-8 animate-fade-in-up font-display uppercase">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
             </span>
-            PROVABLY FAIR ON-CHAIN CASINO
+            Live on Solana Mainnet
           </div>
 
-          {/* Preview Image */}
-          {/* TODO: Replace placeholder with actual preview image/screenshot from casino-solitaire/app/src/assets/landing/hero-preview.png */}
-          <div className="relative w-full max-w-4xl aspect-video bg-black/40 rounded-2xl border border-white/10 shadow-fabulous backdrop-blur-sm mb-12 overflow-hidden mx-auto group">
-            <div className="w-full h-full flex items-center justify-center text-6xl">
-              🎰
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-brand-purple/10 via-transparent to-brand-accent/10 pointer-events-none"></div>
-          </div>
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            The Future of
+            <span className="block text-gradient">On-Chain Gaming</span>
+          </h1>
 
-          {/* Subheading */}
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-            Experience the first fully non-custodial casino on Solana. Instant
-            settlements, verifiable randomness, and direct-to-wallet payouts.
+          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-12 leading-relaxed font-body animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            Experience the first fully non-custodial casino on Solana. 
+            Verifiable randomness, instant settlements, and direct-to-wallet payouts.
           </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <button
               onClick={handleEnterCasino}
-              className="w-full sm:w-auto h-12 px-8 bg-fabulous hover:brightness-110 transition-all duration-300 flex font-semibold text-black rounded-lg shadow-fabulous gap-2 items-center justify-center"
+              className="btn-primary flex items-center gap-2 text-base"
             >
               Enter Casino
               <ArrowRight className="w-4 h-4" />
@@ -61,38 +83,56 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
 
             <button
               onClick={handleViewGames}
-              className="w-full sm:w-auto h-12 px-8 bg-white/5 border border-white/10 text-white font-medium rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2"
+              className="btn-secondary flex items-center gap-2 text-base"
             >
-              <Gamepad2 className="w-4 h-4 text-slate-300" />
+              <Gamepad2 className="w-4 h-4 opacity-70" />
               View Games
             </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            {features.map((feature, index) => (
+              <div 
+                key={index}
+                className="glass-card p-6 text-left group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent mb-4 group-hover:bg-accent/15 transition-colors">
+                  {feature.icon}
+                </div>
+                <h3 className="font-display font-semibold text-white text-base mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-white/50 leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-white/10 bg-[#020205] relative z-10">
+      <footer className="relative z-10 py-8 border-t border-white/5 bg-background/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-brand-accent to-blue-600 flex items-center justify-center text-black font-bold">
-              <Gem className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-accent to-gold flex items-center justify-center">
+              <span className="text-black font-bold text-xs font-display">SV</span>
             </div>
-            <span className="font-bold text-white text-sm">SOL VEGAS</span>
+            <span className="font-display font-semibold text-white text-sm">SOL VEGAS</span>
           </div>
 
-          <div className="text-xs text-slate-500">
-            © 2024 Sol Vegas Casino. All rights reserved.
+          <div className="text-xs text-white/30 font-body">
+            2024 Sol Vegas. All rights reserved.
           </div>
 
-          <div className="flex gap-6">
-            <a href="#" className="text-slate-400 hover:text-white transition-colors">
-              <Twitter className="w-5 h-5" />
+          <div className="flex gap-4">
+            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+              <Twitter className="w-4 h-4" />
             </a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors">
-              <Terminal className="w-5 h-5" />
+            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+              <MessageCircle className="w-4 h-4" />
             </a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors">
-              <Github className="w-5 h-5" />
+            <a href="#" className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+              <Github className="w-4 h-4" />
             </a>
           </div>
         </div>
@@ -100,4 +140,3 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
     </div>
   );
 };
-

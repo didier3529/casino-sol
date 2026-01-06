@@ -29,106 +29,94 @@ const App: FC = () => {
 
   return (
     <WalletProvider>
-      {/* Global Ambient Background Effects */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-grid"></div>
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent/5 blur-[120px] rounded-full mix-blend-screen"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-secondary/5 blur-[100px] rounded-full mix-blend-screen"></div>
-      </div>
+      <div className="min-h-screen relative bg-background">
+        <TopNav
+          activeTab={activeTab}
+          currentView={appView}
+          onGoHome={handleGoHome}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            if (appView === 'landing') {
+              setAppView('app');
+            }
+          }}
+        />
 
-      <div className="min-h-screen relative overflow-hidden">
-        <div className="relative z-10">
-          {/* Unified Navigation (Landing + App) */}
-          <TopNav
-            activeTab={activeTab}
-            currentView={appView}
-            onGoHome={handleGoHome}
-            onTabChange={(tab) => {
-              setActiveTab(tab);
-              if (appView === 'landing') {
-                setAppView('app');
-              }
-            }}
+        {appView === 'landing' ? (
+          <LandingPage 
+            onEnterApp={handleEnterApp}
+            onNavigateToTab={handleNavigateToTab}
           />
-
-          {appView === 'landing' ? (
-            <LandingPage 
-              onEnterApp={handleEnterApp}
-              onNavigateToTab={handleNavigateToTab}
-            />
-          ) : (
-            <>
-              {/* Main Content Container */}
-              <main className="max-w-7xl mx-auto px-6 pt-24 pb-12">
-                {/* Network Info Banner */}
-                <div className="glass-panel rounded-xl px-6 py-3 mb-8 inline-block">
-                  <div className="flex items-center gap-6 text-sm">
-                    <div>
-                      <span className="font-medium text-slate-400">Network:</span>{' '}
-                      <span className="text-brand-accent uppercase font-semibold">{NETWORK}</span>
-                    </div>
-                    <div className="border-l border-white/10 pl-6">
-                      <span className="font-medium text-slate-400">RPC:</span>{' '}
-                      <span className="text-slate-500 font-mono text-xs">{getClusterUrl()}</span>
-                    </div>
-                    <div className="border-l border-white/10 pl-6">
-                      <span className="font-medium text-slate-400">Program:</span>{' '}
-                      <span className="text-slate-500 font-mono text-xs">
-                        {PROGRAM_ID.toBase58().slice(0, 8)}...{PROGRAM_ID.toBase58().slice(-8)}
-                      </span>
-                    </div>
-                  </div>
+        ) : (
+          <>
+            <main className="max-w-7xl mx-auto px-6 pt-20 pb-12">
+              <div className="glass-card px-5 py-3 mb-8 inline-flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/40 font-display">Network</span>
+                  <span className="text-xs text-accent font-display font-semibold uppercase">{NETWORK}</span>
                 </div>
-
-                {/* Tab Pages */}
-                <div className="mt-8">
-                  {activeTab === 'games' && <GamesPage />}
-                  {activeTab === 'how' && <HowItWorksPage />}
-                  {activeTab === 'buyback' && <BuybackPage />}
-                  {activeTab === 'developer' && <DeveloperPage />}
+                <div className="w-px h-4 bg-white/10" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/40 font-display">RPC</span>
+                  <span className="text-xs text-white/50 font-mono">{getClusterUrl().slice(0, 30)}...</span>
                 </div>
-              </main>
-
-              {/* Footer */}
-              <footer className="py-12 border-t border-white/10 bg-[#020205]/80 mt-16">
-                <div className="max-w-7xl mx-auto px-6 text-center">
-                  <div className="text-xs text-slate-500 space-y-2">
-                    <p>
-                      Network: <span className="font-semibold text-brand-accent">{NETWORK}</span> • 
-                      Program: <span className="font-mono">{PROGRAM_ID.toBase58().slice(0, 4)}...{PROGRAM_ID.toBase58().slice(-4)}</span>
-                    </p>
-                  </div>
+                <div className="w-px h-4 bg-white/10" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/40 font-display">Program</span>
+                  <span className="text-xs text-white/50 font-mono">
+                    {PROGRAM_ID.toBase58().slice(0, 6)}...{PROGRAM_ID.toBase58().slice(-6)}
+                  </span>
                 </div>
-              </footer>
-            </>
-          )}
+              </div>
 
-          <Toaster
-            position="top-right"
-            toastOptions={{
+              <div className="mt-6">
+                {activeTab === 'games' && <GamesPage />}
+                {activeTab === 'how' && <HowItWorksPage />}
+                {activeTab === 'buyback' && <BuybackPage />}
+                {activeTab === 'developer' && <DeveloperPage />}
+              </div>
+            </main>
+
+            <footer className="py-8 border-t border-white/5 bg-background-secondary/50">
+              <div className="max-w-7xl mx-auto px-6 text-center">
+                <div className="text-xs text-white/30 font-body space-x-4">
+                  <span>Network: <span className="text-accent font-medium">{NETWORK}</span></span>
+                  <span>|</span>
+                  <span className="font-mono">{PROGRAM_ID.toBase58().slice(0, 8)}...{PROGRAM_ID.toBase58().slice(-8)}</span>
+                </div>
+              </div>
+            </footer>
+          </>
+        )}
+
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: 'rgba(12, 12, 18, 0.95)',
+              color: '#FAFAFA',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '10px',
+              fontFamily: 'Manrope, sans-serif',
+              fontSize: '14px',
+            },
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: '#34D399',
+                secondary: '#FAFAFA',
+              },
+            },
+            error: {
               duration: 5000,
-              style: {
-                background: 'rgba(0, 0, 0, 0.8)',
-                color: '#fff',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+              iconTheme: {
+                primary: '#F87171',
+                secondary: '#FAFAFA',
               },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#00ff9d',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#ff003c',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </div>
+            },
+          }}
+        />
       </div>
     </WalletProvider>
   );

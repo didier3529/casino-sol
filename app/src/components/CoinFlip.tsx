@@ -17,17 +17,16 @@ import {
   getCoinflipWinProbability, 
   getCoinflipPayoutMultiplier 
 } from '../utils/format';
+import { Coins, Wallet } from 'lucide-react';
 
 function solToLamportsBn(sol: string): BN {
   const s = (sol || '').trim();
   if (!s) return new BN(0);
 
-  // Allow "0.1", "1", ".5"
   const normalized = s.startsWith('.') ? `0${s}` : s;
   if (!/^\d+(\.\d+)?$/.test(normalized)) return new BN(0);
 
   const [whole, fracRaw = ''] = normalized.split('.');
-  // Pad / truncate to 9 decimals (lamports)
   const frac = (fracRaw + '000000000').slice(0, 9);
 
   const wholeBn = new BN(whole || '0');
@@ -39,7 +38,7 @@ function solToLamportsBn(sol: string): BN {
 export const CoinFlip: FC = () => {
   const { publicKey } = useWallet();
   const { connection } = useConnection();
-  const { placeBet, isPlacingBet } = useBet();
+  const { placeBet } = useBet();
   const { fetchCasino, fetchVaultBalance, fetchSessionByPubkey } = useCasino();
   const { reportGameResultFromLamports } = useLeaderboard();
   const { fulfillRandomness, isFulfilling } = useFulfillRandomness();
@@ -52,8 +51,6 @@ export const CoinFlip: FC = () => {
   const [isRoundInProgress, setIsRoundInProgress] = useState(false);
   const [isAuthority, setIsAuthority] = useState(false);
 
-  // Modal state
-  const [modalOpen, setModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState<'submitting' | 'flipping' | 'result'>('submitting');
   const [modalData, setModalData] = useState<{
     betAmount: string;
@@ -65,7 +62,7 @@ export const CoinFlip: FC = () => {
       outcome: number;
       isWin: boolean;
       payout: string;
-      payoutClaimed: boolean;
+      payoutClaimed?: boolean;
     };
     resolveTxSignature?: string;
   }>({
@@ -73,15 +70,13 @@ export const CoinFlip: FC = () => {
     choice: 0,
   });
 
-  // Cancels any in-flight polling loop when the user closes the modal or starts a new round
   const pollTokenRef = useRef(0);
 
-  // Load casino config and balances
   useEffect(() => {
     if (publicKey) {
       loadCasinoData();
       checkAuthority();
-      const interval = setInterval(loadCasinoData, 10000); // Refresh every 10s
+      const interval = setInterval(loadCasinoData, 10000);
       return () => clearInterval(interval);
     }
   }, [publicKey]);
@@ -94,12 +89,12 @@ export const CoinFlip: FC = () => {
     
     try {
       const casino = await fetchCasino();
-      if (casino && casino.authority.toBase58() === publicKey.toBase58()) {
+      if (casino && (casino as any).authority?.toBase58() === publicKey.toBase58()) {
         setIsAuthority(true);
       } else {
         setIsAuthority(false);
       }
-    } catch (error) {
+    } catch {
       setIsAuthority(false);
     }
   };
@@ -120,37 +115,32 @@ export const CoinFlip: FC = () => {
   const handlePlaceBet = async () => {
     const amountInLamports = solToLamportsBn(betAmount);
     
-    // Validation 1: Non-zero bet
     if (amountInLamports.lte(new BN(0))) {
       toast.error('Please enter a valid bet amount');
       return;
     }
 
-    // Validation 2: Casino initialized
     if (!casinoConfig) {
       toast.error('Casino not initialized. Please initialize it first.');
       return;
     }
 
-    // Validation 3: Min bet
     const minBet = new BN(casinoConfig.minBet.toString());
     if (amountInLamports.lt(minBet)) {
       toast.error(`Bet amount must be at least ${(minBet.toNumber() / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
       return;
     }
 
-    // Validation 4: Max bet
     const maxBet = new BN(casinoConfig.maxBet.toString());
     if (amountInLamports.gt(maxBet)) {
       toast.error(`Bet amount cannot exceed ${(maxBet.toNumber() / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
       return;
     }
 
-    // Validation 5: Vault liquidity (match on-chain: vault_balance >= potential_payout)
     const maxAllowedBetStr = calcCoinflipMaxBetFromVaultLamports(vaultBalance.toString());
     const maxAllowedBet = new BN(maxAllowedBetStr);
     if (maxAllowedBet.eq(new BN(0))) {
-      toast.error('Casino vault is out of liquidity (likely drained for testing). Fund the vault in the Operator panel to enable bets.');
+      toast.error('Casino vault is out of liquidity.');
       return;
     }
     if (amountInLamports.gt(maxAllowedBet)) {
@@ -158,32 +148,25 @@ export const CoinFlip: FC = () => {
       return;
     }
 
-    // Validation 6: Player balance
     if (amountInLamports.gt(new BN(playerBalance))) {
       toast.error(`Insufficient balance. You have ${(playerBalance / LAMPORTS_PER_SOL).toFixed(4)} SOL`);
       return;
     }
 
-    // Start the game round
     setIsRoundInProgress(true);
-    setModalOpen(true);
     setModalStep('submitting');
     setModalData({
       betAmount: amountInLamports.toString(),
       choice,
     });
 
-    // Place bet
     const betResult = await placeBet('coinflip', choice, amountInLamports);
     
     if (!betResult) {
-      // Bet failed
-      setModalOpen(false);
       setIsRoundInProgress(false);
       return;
     }
 
-    // Bet placed successfully - show flipping state
     setModalStep('flipping');
     setModalData(prev => ({
       ...prev,
@@ -192,39 +175,35 @@ export const CoinFlip: FC = () => {
       playerPubkey: publicKey!.toBase58(),
     }));
 
-    // Relayer mode: players never sign a resolve transaction.
-    // We just poll until the session is resolved on-chain by the authority relayer.
-    console.log('⏳ Waiting for relayer to settle session:', betResult.sessionPda);
     const startedAt = Date.now();
     const timeoutMs = 45_000;
     let didResolve = false;
     const myPollToken = ++pollTokenRef.current;
 
     while (Date.now() - startedAt < timeoutMs) {
-      if (pollTokenRef.current !== myPollToken) break; // cancelled
+      if (pollTokenRef.current !== myPollToken) break;
 
-      // Poll every 500ms to catch session before relayer closes it (relayer settles very fast)
       await new Promise(resolve => setTimeout(resolve, 500));
       
       try {
         const found = await fetchSessionByPubkey(new PublicKey(betResult.sessionPda));
         if (found?.account?.result) {
+          const result = found.account.result;
           const actualBetAmountLamports = amountInLamports.toString();
-          const payoutLamports = found.account.result.payout;
+          const payoutLamports = result.payout;
           setModalStep('result');
           setModalData(prev => ({
             ...prev,
             betAmount: actualBetAmountLamports,
             result: {
-              outcome: found.account.result.outcome,
-              isWin: found.account.result.isWin,
+              outcome: result.outcome,
+              isWin: result.isWin,
               payout: payoutLamports,
-              payoutClaimed: found.account.result.payoutClaimed,
+              payoutClaimed: (result as any).payoutClaimed,
             },
           }));
           didResolve = true;
           
-          // Report result to leaderboard (non-blocking)
           if (publicKey) {
             reportGameResultFromLamports(
               publicKey.toBase58(),
@@ -232,36 +211,29 @@ export const CoinFlip: FC = () => {
               'coinflip',
               actualBetAmountLamports,
               payoutLamports,
-              found.account.result.isWin,
-              { choice, outcome: found.account.result.outcome }
+              result.isWin,
+              { choice, outcome: result.outcome }
             ).catch(err => console.warn('Failed to report to leaderboard:', err));
           }
           
           break;
         }
       } catch (fetchError) {
-        // Transient fetch error (e.g., network, RPC rate limit) - continue polling
         console.warn('Polling fetch error (will retry):', fetchError);
       }
     }
 
-    // If timeout, allow user to close and check sessions list
     if (!didResolve && pollTokenRef.current === myPollToken) {
       toast('Still settling... check Session List in a few seconds.', { icon: '⏳' });
-      setModalOpen(false);
     }
 
     setIsRoundInProgress(false);
-    
-    // Refresh data after round
     setTimeout(loadCasinoData, 2000);
   };
 
   const handleStopWaiting = () => {
-    pollTokenRef.current++; // cancel any in-flight poll loop
-    setModalOpen(false);
+    pollTokenRef.current++;
     setIsRoundInProgress(false);
-    // Refresh sessions
     setTimeout(loadCasinoData, 1000);
   };
 
@@ -278,17 +250,17 @@ export const CoinFlip: FC = () => {
       const result = await fulfillRandomness(sessionPk, playerPk);
       if (result) {
         toast.success('Session manually resolved!');
-        // Re-check the session
         const session = await fetchSessionByPubkey(sessionPk);
         if (session?.account?.result) {
+          const sessionResult = session.account.result;
           setModalStep('result');
           setModalData(prev => ({
             ...prev,
             result: {
-              outcome: session.account.result.outcome,
-              isWin: session.account.result.isWin,
-              payout: session.account.result.payout,
-              payoutClaimed: session.account.result.payoutClaimed,
+              outcome: sessionResult.outcome,
+              isWin: sessionResult.isWin,
+              payout: sessionResult.payout,
+              payoutClaimed: (sessionResult as any).payoutClaimed,
             },
           }));
         }
@@ -303,130 +275,125 @@ export const CoinFlip: FC = () => {
   const betAmountInLamportsStr = betAmountInLamportsBn.toString();
   const expectedPayoutLamportsStr = calcCoinflipPayoutLamports(betAmountInLamportsStr);
   const expectedPayoutSol = formatLamportsToSol(expectedPayoutLamportsStr);
-  const maxBetFromVaultLamportsStr = calcCoinflipMaxBetFromVaultLamports(vaultBalance.toString());
 
   return (
-    <>
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="glass-effect rounded-2xl shadow-glow-lg p-8">
-          <h1 className="text-4xl font-bold text-center mb-8 gradient-text">🪙 CoinFlip</h1>
-          
-          {!publicKey ? (
-            <div className="text-center">
-              <p className="mb-4 text-[var(--text-secondary)]">Connect your wallet to start playing</p>
-              <WalletMultiButton />
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {/* Coin Flip View */}
-              <CoinFlipView
-                isFlipping={isRoundInProgress && modalStep === 'flipping'}
-                choice={choice}
-                result={modalData.result?.outcome}
-                isWin={modalData.result?.isWin}
-              />
+    <div className="max-w-2xl mx-auto">
+      <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="w-12 h-12 rounded-xl bg-accent-muted flex items-center justify-center">
+          <Coins className="w-6 h-6 text-accent" />
+        </div>
+        <h1 className="text-3xl font-display font-bold text-white">CoinFlip</h1>
+      </div>
+      
+      {!publicKey ? (
+        <div className="text-center py-10">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-accent-muted mb-4">
+            <Wallet className="w-7 h-7 text-accent" />
+          </div>
+          <p className="mb-4 text-white/50 font-body">Connect your wallet to start playing</p>
+          <WalletMultiButton />
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <CoinFlipView
+            isFlipping={isRoundInProgress && modalStep === 'flipping'}
+            choice={choice}
+            result={modalData.result?.outcome}
+            isWin={modalData.result?.isWin}
+          />
 
-              {/* Round Status */}
-              {isRoundInProgress && (
-                <RoundStatus
-                  step={modalStep}
-                  betAmount={modalData.betAmount}
-                  betTxSignature={modalData.betTxSignature}
-                  result={modalData.result}
-                  onStopWaiting={handleStopWaiting}
-                  isAuthority={isAuthority}
-                  onManualResolve={handleManualResolve}
-                  isFulfilling={isFulfilling}
-                  sessionPubkey={modalData.sessionPubkey}
-                  playerPubkey={modalData.playerPubkey}
-                  gameType="coinflip"
-                />
-              )}
+          {isRoundInProgress && (
+            <RoundStatus
+              step={modalStep}
+              betAmount={modalData.betAmount}
+              betTxSignature={modalData.betTxSignature}
+              result={modalData.result}
+              onStopWaiting={handleStopWaiting}
+              isAuthority={isAuthority}
+              onManualResolve={handleManualResolve}
+              isFulfilling={isFulfilling}
+              sessionPubkey={modalData.sessionPubkey}
+              playerPubkey={modalData.playerPubkey}
+              gameType="coinflip"
+            />
+          )}
 
-              {/* Choice Selection */}
-              <div className="space-y-4">
-                <label className="block text-sm font-bold text-[var(--text-primary)]">
-                  Choose Your Side
-                </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setChoice(0)}
-                    disabled={isRoundInProgress}
-                    className={`p-6 glass-effect rounded-xl border-2 transition-all ${
-                      isRoundInProgress ? 'opacity-50 cursor-not-allowed' :
-                      choice === 0
-                        ? 'border-[var(--accent)] bg-gradient-to-br from-[var(--accent-glow)] to-[var(--card)]'
-                        : 'border-[var(--border)] hover:border-[var(--accent)]'
-                    }`}
-                  >
-                    <div className="text-4xl mb-2">🪙</div>
-                    <div className="font-semibold text-[var(--text-primary)]">Heads</div>
-                    <div className="text-sm text-[var(--text-secondary)]">(0)</div>
-                  </button>
-                  <button
-                    onClick={() => setChoice(1)}
-                    disabled={isRoundInProgress}
-                    className={`p-6 glass-effect rounded-xl border-2 transition-all ${
-                      isRoundInProgress ? 'opacity-50 cursor-not-allowed' :
-                      choice === 1
-                        ? 'border-[var(--secondary)] bg-gradient-to-br from-[var(--secondary-glow)] to-[var(--card)]'
-                        : 'border-[var(--border)] hover:border-[var(--secondary)]'
-                    }`}
-                  >
-                    <div className="text-4xl mb-2">🎯</div>
-                    <div className="font-semibold text-[var(--text-primary)]">Tails</div>
-                    <div className="text-sm text-[var(--text-secondary)]">(1)</div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Bet Amount */}
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-[var(--text-primary)]">
-                  Bet Amount (SOL)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  value={betAmount}
-                  onChange={(e) => setBetAmount(e.target.value)}
-                  className="w-full px-4 py-3 glass-effect rounded-xl text-[var(--text-primary)] font-mono text-lg focus:border-[var(--accent)] transition-all"
-                  placeholder="0.1"
-                  disabled={isRoundInProgress}
-                />
-              </div>
-
-              {/* Payout Display */}
-              <div className="glass-effect rounded-xl p-4 border border-[var(--border)]">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[var(--text-secondary)] font-medium">💰 You bet:</span>
-                    <span className="text-xl font-bold text-[var(--text-primary)]">{betAmount || '0'} SOL</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[var(--success)] font-medium">🎉 If you win:</span>
-                    <span className="text-xl font-bold text-[var(--success)]">{expectedPayoutSol} SOL</span>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-[var(--border)] flex justify-between text-xs text-[var(--text-muted)]">
-                    <span>Win chance: <span className="font-semibold text-[var(--accent)]">{getCoinflipWinProbability()}</span></span>
-                    <span>Payout: <span className="font-semibold text-[var(--accent)]">{getCoinflipPayoutMultiplier()}</span></span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Place Bet Button */}
+          <div className="space-y-3">
+            <label className="block text-sm font-display font-medium text-white/60">
+              Choose Your Side
+            </label>
+            <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={handlePlaceBet}
+                onClick={() => setChoice(0)}
                 disabled={isRoundInProgress}
-                className="w-full py-5 rounded-xl font-bold text-xl text-white bg-gradient-to-r from-[var(--accent)] to-[var(--secondary)] hover:shadow-glow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                className={`p-5 surface-elevated text-center transition-all ${
+                  isRoundInProgress ? 'opacity-50 cursor-not-allowed' :
+                  choice === 0
+                    ? 'border-accent bg-accent-muted'
+                    : 'hover:border-accent/30'
+                }`}
               >
-                {isRoundInProgress ? '🪙 Flipping...' : `🪙 Flip: ${betAmount} SOL on ${choice === 0 ? 'Heads' : 'Tails'}`}
+                <div className="text-3xl mb-2">🪙</div>
+                <div className="font-display font-semibold text-white">Heads</div>
+              </button>
+              <button
+                onClick={() => setChoice(1)}
+                disabled={isRoundInProgress}
+                className={`p-5 surface-elevated text-center transition-all ${
+                  isRoundInProgress ? 'opacity-50 cursor-not-allowed' :
+                  choice === 1
+                    ? 'border-gold bg-gold-muted'
+                    : 'hover:border-gold/30'
+                }`}
+              >
+                <div className="text-3xl mb-2">🎯</div>
+                <div className="font-display font-semibold text-white">Tails</div>
               </button>
             </div>
-          )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-display font-medium text-white/60">
+              Bet Amount (SOL)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0.01"
+              value={betAmount}
+              onChange={(e) => setBetAmount(e.target.value)}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-lg focus:border-accent focus:outline-none transition-all"
+              placeholder="0.1"
+              disabled={isRoundInProgress}
+            />
+          </div>
+
+          <div className="surface-elevated p-4">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-white/50 font-body text-sm">You bet:</span>
+                <span className="text-lg font-mono font-semibold text-white">{betAmount || '0'} SOL</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-success font-body text-sm">If you win:</span>
+                <span className="text-lg font-mono font-semibold text-success">{expectedPayoutSol} SOL</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-white/5 flex justify-between text-xs text-white/40 font-body">
+                <span>Win chance: <span className="font-semibold text-accent">{getCoinflipWinProbability()}</span></span>
+                <span>Payout: <span className="font-semibold text-accent">{getCoinflipPayoutMultiplier()}</span></span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handlePlaceBet}
+            disabled={isRoundInProgress}
+            className="w-full btn-primary py-4 text-lg"
+          >
+            {isRoundInProgress ? 'Flipping...' : `Flip: ${betAmount} SOL on ${choice === 0 ? 'Heads' : 'Tails'}`}
+          </button>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };

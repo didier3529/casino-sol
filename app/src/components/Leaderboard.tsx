@@ -16,10 +16,9 @@ export const Leaderboard: FC = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const [, setSocket] = useState<Socket | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  // Fetch initial leaderboard data
   const fetchLeaderboard = useCallback(async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/leaderboard?limit=100`);
@@ -37,10 +36,8 @@ export const Leaderboard: FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch initial data
     fetchLeaderboard();
 
-    // Setup Socket.IO connection for live updates
     const socketInstance = io(BACKEND_URL, {
       transports: ['websocket', 'polling'],
       reconnection: true,
@@ -49,25 +46,15 @@ export const Leaderboard: FC = () => {
     });
 
     socketInstance.on('connect', () => {
-      console.log('Connected to leaderboard socket');
       setConnected(true);
-      
-      // Subscribe to leaderboard updates
       socketInstance.emit('subscribe:leaderboard');
     });
 
     socketInstance.on('disconnect', () => {
-      console.log('Disconnected from leaderboard socket');
       setConnected(false);
     });
 
-    socketInstance.on('subscribed', (data) => {
-      console.log('Subscribed to leaderboard:', data);
-    });
-
-    // Listen for leaderboard updates
     socketInstance.on('leaderboard:update', (data) => {
-      console.log('Leaderboard update received:', data);
       if (data.data) {
         setLeaderboard(data.data);
         setLastUpdate(new Date(data.timestamp));
@@ -81,13 +68,8 @@ export const Leaderboard: FC = () => {
       }
     });
 
-    socketInstance.on('error', (error) => {
-      console.error('Socket error:', error);
-    });
-
     setSocket(socketInstance);
 
-    // Cleanup on unmount
     return () => {
       if (socketInstance) {
         socketInstance.emit('unsubscribe:leaderboard');
@@ -107,95 +89,68 @@ export const Leaderboard: FC = () => {
   };
 
   const getProfitColor = (profit: number): string => {
-    if (profit > 0) return 'text-[var(--success)]';
-    if (profit < 0) return 'text-[var(--error)]';
-    return 'text-[var(--text-secondary)]';
+    if (profit > 0) return 'text-success';
+    if (profit < 0) return 'text-error';
+    return 'text-white/50';
   };
-
-  const formatRank = (rank: number): string => `#${rank}`;
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent border-t-transparent"></div>
       </div>
     );
   }
 
   return (
     <div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${connected ? 'bg-success animate-pulse' : 'bg-white/20'}`} />
+          <span className="text-xs text-white/40 font-display">{connected ? 'Live' : 'Offline'}</span>
+        </div>
+        {lastUpdate && (
+          <span className="text-xs text-white/30 font-body">Updated {lastUpdate.toLocaleTimeString()}</span>
+        )}
+      </div>
+
       {leaderboard.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[300px] gap-6">
-          {/* Status row - centered */}
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${connected ? 'bg-[var(--success)] animate-pulse' : 'bg-[var(--text-muted)]'}`} />
-              <span className="text-xs text-slate-500 font-semibold">{connected ? 'Live' : 'Offline'}</span>
-            </div>
-            {lastUpdate && (
-              <span className="text-xs text-slate-600">Updated {lastUpdate.toLocaleTimeString()}</span>
-            )}
-          </div>
-          
-          {/* Empty state message */}
-          <p className="text-slate-500 text-center">No players yet. Be the first to play!</p>
+        <div className="text-center py-12">
+          <p className="text-white/40 font-body">No players yet. Be the first to play!</p>
         </div>
       ) : (
-        <>
-          {/* Status row (compact; parent card provides header) */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${connected ? 'bg-[var(--success)] animate-pulse' : 'bg-[var(--text-muted)]'}`} />
-              <span className="text-xs text-slate-500 font-semibold">{connected ? 'Live' : 'Offline'}</span>
-            </div>
-            {lastUpdate && (
-              <span className="text-xs text-slate-600">Updated {lastUpdate.toLocaleTimeString()}</span>
-            )}
-          </div>
-          
-          {/* Leaderboard table */}
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left py-3 px-4 text-xs font-semibold text-slate-200">
-                  Rank
-                </th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-slate-200">
-                  Player
-                </th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-slate-200">
-                  Net Profit
-                </th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-slate-200">
-                  Games
-                </th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-slate-200">
-                  Win Rate
-                </th>
+              <tr className="border-b border-white/5">
+                <th className="text-left py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Rank</th>
+                <th className="text-left py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Player</th>
+                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Net Profit</th>
+                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Games</th>
+                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Win Rate</th>
               </tr>
             </thead>
             <tbody>
-              {leaderboard.map((entry, index) => (
+              {leaderboard.map((entry) => (
                 <tr
                   key={entry.walletAddress}
-                  className="border-b border-white/5 hover:bg-white/[0.03] transition-colors"
+                  className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
                 >
                   <td className="py-3 px-4">
-                    <span className="text-sm font-semibold text-slate-200">{formatRank(entry.rank)}</span>
+                    <span className="text-sm font-display font-semibold text-white">#{entry.rank}</span>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="font-mono text-sm text-slate-200">
+                    <span className="font-mono text-sm text-white/70">
                       {formatWallet(entry.walletAddress)}
                     </span>
                   </td>
-                  <td className={`py-3 px-4 text-right font-semibold ${getProfitColor(entry.netProfit)}`}>
+                  <td className={`py-3 px-4 text-right font-mono font-semibold text-sm ${getProfitColor(entry.netProfit)}`}>
                     {formatProfit(entry.netProfit)}
                   </td>
-                  <td className="py-3 px-4 text-right text-slate-200">
+                  <td className="py-3 px-4 text-right text-sm text-white/60 font-mono">
                     {entry.totalGames}
                   </td>
-                  <td className="py-3 px-4 text-right text-slate-200">
+                  <td className="py-3 px-4 text-right text-sm text-white/60 font-mono">
                     {entry.winRate.toFixed(1)}%
                   </td>
                 </tr>
@@ -203,11 +158,7 @@ export const Leaderboard: FC = () => {
             </tbody>
           </table>
         </div>
-        </>
       )}
     </div>
   );
 };
-
-
-
