@@ -53,7 +53,20 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - `.text-gradient` - Cyan-to-gold text gradient
 - `.font-display` / `.font-body` - Typography utilities
 
+## Documentation
+- **errors-and-fixes.md**: Log of issues encountered and their resolutions (workflow failures, caching, etc.)
+
+## Footer Architecture
+- **App pages** (Games, HowItWorks, Buyback, Developer): Share footer in `app/src/App.tsx`
+- **Landing page**: Has separate footer in `app/src/pages/LandingPage.tsx`
+- Both footers must be edited independently to stay in sync
+
 ## Recent Changes
+- 2026-01-07: Footer Consistency Fix
+  - Unified both footers (App.tsx and LandingPage.tsx) with identical styling
+  - Updated copyright to 2026, added Mainnet indicator and Provably Fair badge
+  - Increased Shield icon size from w-3 to w-3.5 for better visibility
+  - Created errors-and-fixes.md to document debugging process
 - 2026-01-06: Social Links & Content Cleanup
   - Moved X and GitHub social buttons to top navigation (visible immediately)
   - Removed duplicate Buyback & Burn section from How It Works page
