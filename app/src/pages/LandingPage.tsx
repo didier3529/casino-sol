@@ -137,7 +137,7 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
               <span className="text-white/40 font-display">Solana Mainnet</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-white/40">
-              <Shield className="w-3 h-3" />
+              <Shield className="w-3.5 h-3.5" />
               <span className="font-display">Provably Fair</span>
             </div>
           </div>
