@@ -18,23 +18,13 @@ export const GamesPage: FC = () => {
     <div className="max-w-7xl mx-auto py-6 space-y-8">
       {selectedGame === null ? (
         <>
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">
               Casino Lobby
             </h1>
             <p className="text-white/50 text-lg font-body">
               Select a game to start playing on-chain
             </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <InitializeCasino />
-          </div>
-
-          <div className="max-w-6xl mx-auto">
-            <div className="glass-card p-6">
-              <CasinoInfo />
-            </div>
           </div>
 
           <div className="max-w-6xl mx-auto">
@@ -49,6 +39,16 @@ export const GamesPage: FC = () => {
 
           <div className="max-w-6xl mx-auto">
             <div className="glass-card p-6">
+              <CasinoInfo />
+            </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <InitializeCasino />
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="glass-card p-6">
               <h2 className="text-xl font-display font-semibold text-white mb-5 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-accent" />
                 <span>Top Players</span>
@@ -58,12 +58,12 @@ export const GamesPage: FC = () => {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="glass-card p-6 text-center">
-              <div className="flex items-center justify-center gap-2 text-accent mb-2">
-                <ShieldCheck className="w-5 h-5" />
-                <span className="font-display font-semibold">100% Provably Fair</span>
+            <div className="glass-card p-4 text-center">
+              <div className="flex items-center justify-center gap-2 text-accent mb-1">
+                <ShieldCheck className="w-4 h-4" />
+                <span className="font-display font-semibold text-sm">100% Provably Fair</span>
               </div>
-              <p className="text-sm text-white/40 font-body">
+              <p className="text-xs text-white/40 font-body">
                 All games use Switchboard VRF for verifiable on-chain randomness
               </p>
             </div>

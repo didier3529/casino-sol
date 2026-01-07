@@ -123,24 +123,6 @@ export const DeveloperPage: FC = () => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
-  if (!publicKey) {
-    return (
-      <div className="max-w-4xl mx-auto text-center py-16">
-        <div className="glass-card p-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent-muted mb-6">
-            <Zap className="w-8 h-8 text-accent" />
-          </div>
-          <h2 className="text-2xl font-display font-bold text-white mb-3">
-            Connect Wallet
-          </h2>
-          <p className="text-white/50 font-body">
-            Connect your wallet to access developer tools and monitoring
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="mb-8">
@@ -154,6 +136,20 @@ export const DeveloperPage: FC = () => {
           Real-time casino monitoring, analytics, and operator controls
         </p>
       </div>
+
+      {!publicKey && (
+        <div className="glass-card p-4 border-accent/30">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <p className="font-display font-semibold text-white">Connect Wallet for Live Data</p>
+              <p className="text-xs text-white/50 font-body">Connect your wallet to see real-time balances and enable operator controls</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="glass-card p-5">
