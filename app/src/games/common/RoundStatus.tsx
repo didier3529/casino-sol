@@ -5,7 +5,7 @@
 
 import { FC, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ExternalLink, X } from 'lucide-react';
+import { Loader2, ExternalLink, X, Share2 } from 'lucide-react';
 import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 import { formatLamportsToSol } from '../../utils/format';
@@ -55,6 +55,17 @@ export const RoundStatus: FC<RoundStatusProps> = ({
   const getExplorerUrl = (signature: string) => {
     const cluster = NETWORK === 'devnet' ? 'devnet' : '';
     return `https://explorer.solana.com/tx/${signature}${cluster ? `?cluster=${cluster}` : ''}`;
+  };
+
+  const shareOnX = () => {
+    if (!result) return;
+    const gameName = gameType === 'coinflip' ? 'CoinFlip' : gameType === 'dice' ? 'Dice' : 'Slots';
+    const resultText = result.isWin 
+      ? `Just won ${payoutSol} SOL playing ${gameName} on SOL VEGAS! 🎰`
+      : `Tried my luck on SOL VEGAS ${gameName}. The house won this time, but I'll be back! 🎲`;
+    const hashtags = 'SOLVEGAS,Solana,CasinoGaming';
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(resultText)}&hashtags=${hashtags}`;
+    window.open(tweetUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleClaimWinnings = async () => {
@@ -180,15 +191,24 @@ export const RoundStatus: FC<RoundStatusProps> = ({
               </div>
 
               {betTxSignature && (
-                <a
-                  href={getExplorerUrl(betTxSignature)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-xs text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  View transaction
-                </a>
+                <div className="flex items-center justify-between">
+                  <a
+                    href={getExplorerUrl(betTxSignature)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-xs text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    View transaction
+                  </a>
+                  <button
+                    onClick={shareOnX}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-display transition-all"
+                  >
+                    <Share2 className="w-3 h-3" />
+                    Share on X
+                  </button>
+                </div>
               )}
 
               {/* Claim Winnings for wins that haven't been claimed */}

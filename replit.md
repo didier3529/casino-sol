@@ -62,6 +62,20 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - Both footers must be edited independently to stay in sync
 
 ## Recent Changes
+- 2026-01-07: Developer Dashboard & Launch Readiness
+  - Created comprehensive LAUNCH_CHECKLIST.md for testnet/mainnet deployment
+  - Expanded Developer page with:
+    - Quick stat cards (Vault, Treasury, Players, Total Games)
+    - Treasury & Buyback panel with min/max bet display
+    - Recent Activity feed showing live transactions
+    - Wallet Leaderboard with ranking and profit tracking
+    - System Health monitoring (existing)
+  - Enhanced CasinoLobby game cards:
+    - Larger icons (w-10 h-10), more dramatic glow effects
+    - "Live" badge for active games, "Soon" badge for coming soon
+    - Video trailer slot placeholder for future content
+    - Premium gradient backgrounds and hover animations
+  - Added X/Twitter share button to game results (tweet intent, no API)
 - 2026-01-07: Casino Activation Redesign
   - Redesigned InitializeCasino component with casino-themed styling
   - New messaging: "Activate the Casino", "Light Up the Casino" button
