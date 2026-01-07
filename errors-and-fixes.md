@@ -24,6 +24,15 @@ User reported that the footer on the Developer page was not matching the updated
    - Copyright: `2026 Sol Vegas. All rights reserved.`
    - Mainnet indicator: green pulsing dot + "Solana Mainnet"
    - Provably Fair: Shield icon at `w-3.5 h-3.5` (increased from w-3 for better visibility)
+3. **Added cache control headers** to `app/vite.config.ts` to prevent browser caching:
+   ```javascript
+   headers: {
+     'Cache-Control': 'no-store, no-cache, must-revalidate',
+     'Pragma': 'no-cache',
+     'Expires': '0',
+   }
+   ```
+   This forces the browser to always fetch fresh content from the dev server.
 
 ### Lessons Learned
 1. **Always check workflow status** before assuming code changes aren't working
