@@ -4,7 +4,7 @@ import { SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import toast from 'react-hot-toast';
 import { useCasino } from '../hooks/useCasino';
-import { CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2, Sparkles, Zap, Coins } from 'lucide-react';
 
 export const InitializeCasino: FC = () => {
   const { connection } = useConnection();
@@ -79,7 +79,7 @@ export const InitializeCasino: FC = () => {
     }
 
     setIsInitializing(true);
-    const toastId = toast.loading('Initializing casino...');
+    const toastId = toast.loading('Activating the casino...');
 
     try {
       const minBetLamports = new BN(minBetNum * LAMPORTS_PER_SOL);
@@ -112,12 +112,12 @@ export const InitializeCasino: FC = () => {
         lastValidBlockHeight,
       });
 
-      toast.success('Casino initialized successfully!', { id: toastId });
+      toast.success('Casino is now LIVE!', { id: toastId });
       await checkInitialization();
     } catch (error: any) {
       console.error('Initialize error:', error);
       toast.error(
-        `Failed to initialize: ${error.message || 'Unknown error'}`,
+        `Failed to activate: ${error.message || 'Unknown error'}`,
         { id: toastId }
       );
     } finally {
@@ -127,10 +127,12 @@ export const InitializeCasino: FC = () => {
 
   if (isInitialized === null) {
     return (
-      <div className="glass-card p-6 mb-6">
-        <div className="flex items-center gap-3 text-white/50">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="font-body">Checking casino status...</span>
+      <div className="glass-card p-8 mb-6">
+        <div className="flex items-center justify-center gap-4 text-white/50">
+          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-accent" />
+          </div>
+          <span className="font-display text-lg">Checking casino status...</span>
         </div>
       </div>
     );
@@ -138,14 +140,14 @@ export const InitializeCasino: FC = () => {
 
   if (isInitialized) {
     return (
-      <div className="glass-card p-5 mb-6 border-success/30">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-success-muted flex items-center justify-center">
-            <CheckCircle className="w-5 h-5 text-success" />
+      <div className="glass-card p-6 mb-6 border-success/30">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-success/20 flex items-center justify-center shadow-[0_0_20px_rgba(52,211,153,0.2)]">
+            <CheckCircle className="w-7 h-7 text-success" />
           </div>
           <div>
-            <p className="font-display font-semibold text-success">Casino is initialized and ready</p>
-            <p className="text-sm text-white/40 font-body">You can now place bets</p>
+            <p className="font-display font-bold text-xl text-success">Casino is LIVE</p>
+            <p className="text-sm text-white/50 font-body">Tables are open - place your bets!</p>
           </div>
         </div>
       </div>
@@ -153,91 +155,119 @@ export const InitializeCasino: FC = () => {
   }
 
   return (
-    <div className="glass-card p-6 mb-6 border-warning/30">
-      <div className="flex items-start gap-3 mb-5">
-        <div className="w-10 h-10 rounded-xl bg-warning/20 flex items-center justify-center shrink-0">
-          <AlertTriangle className="w-5 h-5 text-warning" />
-        </div>
-        <div>
-          <h3 className="text-lg font-display font-semibold text-warning mb-1">
-            Casino Not Initialized
-          </h3>
-          <p className="text-sm text-white/50 font-body">
-            The casino needs to be initialized before players can place bets.
-          </p>
-        </div>
-      </div>
-
-      {!wallet.connected ? (
-        <p className="text-white/50 font-body text-sm">
-          Please connect your wallet to initialize the casino.
-        </p>
-      ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-display font-medium text-white/60 mb-2">
-                Min Bet (SOL)
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                value={minBet}
-                onChange={(e) => setMinBet(e.target.value)}
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white font-mono text-sm focus:border-accent focus:outline-none transition-all"
-                disabled={isInitializing}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-display font-medium text-white/60 mb-2">
-                Max Bet (SOL)
-              </label>
-              <input
-                type="number"
-                step="0.1"
-                value={maxBet}
-                onChange={(e) => setMaxBet(e.target.value)}
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white font-mono text-sm focus:border-accent focus:outline-none transition-all"
-                disabled={isInitializing}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-display font-medium text-white/60 mb-2">
-                Initial Vault (SOL)
-              </label>
-              <input
-                type="number"
-                step="1"
-                value={initialVault}
-                onChange={(e) => setInitialVault(e.target.value)}
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white font-mono text-sm focus:border-accent focus:outline-none transition-all"
-                disabled={isInitializing}
-              />
+    <div className="glass-card p-8 mb-6 border-gold/20 relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-gold/50 to-transparent"></div>
+      <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
+      
+      <div className="relative">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gold/20 rounded-2xl blur-lg animate-pulse"></div>
+              <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-gold" />
+              </div>
             </div>
           </div>
-
-          <button
-            onClick={initializeCasino}
-            disabled={isInitializing}
-            className="w-full btn-gold flex items-center justify-center gap-2"
-          >
-            {isInitializing ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Initializing...
-              </>
-            ) : (
-              'Initialize Casino'
-            )}
-          </button>
-
-          <p className="text-xs text-white/30 font-body">
-            This will create the casino account and fund the vault with {initialVault} SOL.
+          
+          <h3 className="text-2xl font-display font-bold text-white mb-2">
+            Activate the Casino
+          </h3>
+          <p className="text-white/50 font-body max-w-md mx-auto">
+            Light up the tables and open the floor. Initialize the on-chain casino to start accepting bets.
           </p>
         </div>
-      )}
+
+        {!wallet.connected ? (
+          <div className="text-center py-6">
+            <div className="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-white/5 border border-white/10">
+              <Zap className="w-5 h-5 text-accent" />
+              <span className="text-white/70 font-display">Connect your wallet to activate</span>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="flex items-center gap-2 text-xs font-display font-semibold text-gold/80 mb-2 uppercase tracking-wider">
+                  <Coins className="w-3.5 h-3.5" />
+                  Min Bet
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={minBet}
+                    onChange={(e) => setMinBet(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-base focus:border-gold/50 focus:bg-white/[0.07] focus:outline-none transition-all"
+                    disabled={isInitializing}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-mono text-sm">SOL</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-xs font-display font-semibold text-gold/80 mb-2 uppercase tracking-wider">
+                  <Coins className="w-3.5 h-3.5" />
+                  Max Bet
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={maxBet}
+                    onChange={(e) => setMaxBet(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-base focus:border-gold/50 focus:bg-white/[0.07] focus:outline-none transition-all"
+                    disabled={isInitializing}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-mono text-sm">SOL</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-xs font-display font-semibold text-gold/80 mb-2 uppercase tracking-wider">
+                  <Coins className="w-3.5 h-3.5" />
+                  House Vault
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="1"
+                    value={initialVault}
+                    onChange={(e) => setInitialVault(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-base focus:border-gold/50 focus:bg-white/[0.07] focus:outline-none transition-all"
+                    disabled={isInitializing}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-mono text-sm">SOL</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={initializeCasino}
+              disabled={isInitializing}
+              className="w-full btn-gold flex items-center justify-center gap-3 py-4 text-lg"
+            >
+              {isInitializing ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Activating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5" />
+                  Light Up the Casino
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center justify-center gap-2 text-xs text-white/30 font-body">
+              <Zap className="w-3.5 h-3.5" />
+              <span>Funds the house vault with {initialVault} SOL to cover player wins</span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
