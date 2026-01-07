@@ -62,11 +62,17 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - Both footers must be edited independently to stay in sync
 
 ## Recent Changes
+- 2026-01-07: Casino Activation Redesign
+  - Redesigned InitializeCasino component with casino-themed styling
+  - New messaging: "Activate the Casino", "Light Up the Casino" button
+  - Sparkles icon, gold glow effects, premium glass-card styling
+  - Better visual states for loading, initialized, and not-initialized
 - 2026-01-07: Footer Consistency Fix
   - Unified both footers (App.tsx and LandingPage.tsx) with identical styling
   - Updated copyright to 2026, added Mainnet indicator and Provably Fair badge
   - Increased Shield icon size from w-3 to w-3.5 for better visibility
   - Created errors-and-fixes.md to document debugging process
+  - Added cache control headers to vite.config.ts to prevent stale content
 - 2026-01-06: Social Links & Content Cleanup
   - Moved X and GitHub social buttons to top navigation (visible immediately)
   - Removed duplicate Buyback & Burn section from How It Works page
