@@ -62,6 +62,12 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - Both footers must be edited independently to stay in sync
 
 ## Recent Changes
+- 2026-01-07: Visibility & Layout Fixes
+  - Fixed DeveloperPage wallet-gate bug: removed early `if (!publicKey) return` guard
+  - Developer dashboard now renders all panels even without wallet connected
+  - Added inline "Connect Wallet for Live Data" banner instead of blocking content
+  - GamesPage: Moved games FIRST, InitializeCasino moved below (scroll down to access)
+  - InitializeCasino: Made more compact (smaller padding, inline layout, tighter spacing)
 - 2026-01-07: Developer Dashboard & Launch Readiness
   - Created comprehensive LAUNCH_CHECKLIST.md for testnet/mainnet deployment
   - Expanded Developer page with:
