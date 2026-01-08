@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::{self, CreateAccount};
+use anchor_lang::system_program;
 use crate::state::*;
 use crate::errors::CasinoError;
 
@@ -14,8 +14,6 @@ pub struct Initialize<'info> {
     )]
     pub casino: Account<'info, CasinoConfig>,
     
-    /// Vault PDA (SystemAccount) that holds all bets
-    /// CHECK: Vault PDA is created and validated via seeds
     #[account(
         mut,
         seeds = [VAULT_SEED, casino.key().as_ref()],
@@ -23,8 +21,6 @@ pub struct Initialize<'info> {
     )]
     pub vault: SystemAccount<'info>,
     
-    /// Treasury PDA (SystemAccount) that holds excess profits for buyback
-    /// CHECK: Treasury PDA is created and validated via seeds
     #[account(
         mut,
         seeds = [TREASURY_SEED, casino.key().as_ref()],
@@ -44,11 +40,10 @@ pub fn handler(
     max_bet: u64,
     initial_vault_amount: u64,
 ) -> Result<()> {
-    // Validate config
     require!(min_bet > 0, CasinoError::InvalidBetAmount);
     require!(max_bet >= min_bet, CasinoError::InvalidBetAmount);
     require!(
-        max_bet <= initial_vault_amount / 2, // Max bet should be at most half vault balance
+        max_bet <= initial_vault_amount / 2,
         CasinoError::InvalidBetAmount
     );
     
@@ -56,7 +51,6 @@ pub fn handler(
     let vault_bump = *ctx.bumps.get("vault").unwrap();
     let treasury_bump = *ctx.bumps.get("treasury").unwrap();
     
-    // Initialize casino config
     casino.authority = ctx.accounts.authority.key();
     casino.vault_bump = vault_bump;
     casino.treasury_bump = treasury_bump;
@@ -69,7 +63,6 @@ pub fn handler(
     casino.is_active = true;
     casino.switchboard_function = None;
     
-    // Transfer initial liquidity to vault if amount specified
     if initial_vault_amount > 0 {
         let transfer_cpi = system_program::Transfer {
             from: ctx.accounts.authority.to_account_info(),
@@ -90,16 +83,3 @@ pub fn handler(
     
     Ok(())
 }
-
-
-    }
-    
-    msg!("Casino initialized!");
-    msg!("Authority: {}", casino.authority);
-    msg!("Min bet: {} lamports", casino.min_bet);
-    msg!("Max bet: {} lamports", casino.max_bet);
-    msg!("Initial vault balance: {} lamports", initial_vault_amount);
-    
-    Ok(())
-}
-

@@ -50,6 +50,3 @@ pub enum CasinoError {
     #[msg("Invalid skim amount - must be greater than zero")]
     InvalidSkimAmount,
 }
-
-    InvalidSkimAmount,
-}
