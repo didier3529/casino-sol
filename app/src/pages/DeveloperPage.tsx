@@ -4,6 +4,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useSystemHealth } from '../hooks/useSystemHealth';
 import { useCasino } from '../hooks/useCasino';
 import { OperatorPanel } from '../components/OperatorPanel';
+import { BuybackControlPanel } from '../components/BuybackControlPanel';
 import { isOperatorBuildEnabled, isOperatorPublicKey } from '../utils/operatorGate';
 import { 
   Activity, Server, Database, Zap, Clock, AlertCircle, CheckCircle, RefreshCw, Lock,
@@ -566,6 +567,8 @@ export const DeveloperPage: FC = () => {
       </div>
 
       {isOperator && <OperatorPanel />}
+      
+      <BuybackControlPanel />
       
       {!isOperator && (
         <div className="glass-card p-8 text-center">

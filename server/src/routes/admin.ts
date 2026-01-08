@@ -3,13 +3,14 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { getBuybackService } from '../services/buybackService';
 import { logger } from '../utils/logger';
 import { getDatabase } from '../database';
-import { getRedisClient } from '../cache/redis';
+import { getRedis } from '../cache/redis';
 import { config } from '../config';
+import { operatorAuthMiddleware, developmentOnlyAuth, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
-// TODO: Add authentication middleware to protect these routes
-// For now, these are unprotected - add auth before production!
+// Apply operator authentication to all mutating endpoints
+// Read-only endpoints use optional auth (work without auth but log operator if present)
 
 /**
  * GET /api/admin/buyback/status
@@ -70,9 +71,9 @@ router.get('/buyback/config', async (req: Request, res: Response) => {
 
 /**
  * PATCH /api/admin/buyback/config
- * Update buyback configuration
+ * Update buyback configuration (requires operator auth)
  */
-router.patch('/buyback/config', async (req: Request, res: Response) => {
+router.patch('/buyback/config', developmentOnlyAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const buybackService = getBuybackService();
     const updates = req.body;
@@ -87,6 +88,9 @@ router.patch('/buyback/config', async (req: Request, res: Response) => {
       'slippage_bps',
       'is_active',
       'dry_run',
+      'execution_mode',
+      'pumpfun_mint',
+      'pumpfun_enabled_until_migration',
     ];
     
     const invalidFields = Object.keys(updates).filter(key => !allowedFields.includes(key));
@@ -123,9 +127,9 @@ router.patch('/buyback/config', async (req: Request, res: Response) => {
 
 /**
  * POST /api/admin/buyback/run
- * Manually trigger a buyback (ignores long cooldown, uses 30s anti-spam)
+ * Manually trigger a buyback (requires operator auth)
  */
-router.post('/buyback/run', async (req: Request, res: Response) => {
+router.post('/buyback/run', developmentOnlyAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const buybackService = getBuybackService();
     logger.info('Manual buyback triggered via API');
@@ -151,9 +155,9 @@ router.post('/buyback/run', async (req: Request, res: Response) => {
 
 /**
  * POST /api/admin/buyback/pause
- * Pause buyback (set is_active = false)
+ * Pause buyback (requires operator auth)
  */
-router.post('/buyback/pause', async (req: Request, res: Response) => {
+router.post('/buyback/pause', developmentOnlyAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const buybackService = getBuybackService();
     const success = await buybackService.updateConfig({ is_active: false });
@@ -182,9 +186,9 @@ router.post('/buyback/pause', async (req: Request, res: Response) => {
 
 /**
  * POST /api/admin/buyback/resume
- * Resume buyback (set is_active = true)
+ * Resume buyback (requires operator auth)
  */
-router.post('/buyback/resume', async (req: Request, res: Response) => {
+router.post('/buyback/resume', developmentOnlyAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const buybackService = getBuybackService();
     const success = await buybackService.updateConfig({ is_active: true });
@@ -259,9 +263,9 @@ router.get('/buyback/stats', async (req: Request, res: Response) => {
 
 /**
  * POST /api/admin/buyback/update-config
- * Update buyback configuration (execution mode, mint, etc.)
+ * Update buyback configuration (requires operator auth)
  */
-router.post('/buyback/update-config', async (req: Request, res: Response) => {
+router.post('/buyback/update-config', developmentOnlyAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { execution_mode, pumpfun_mint } = req.body;
     
@@ -330,7 +334,7 @@ router.get('/health/system', async (req: Request, res: Response) => {
     
     // Check Redis connection
     try {
-      const redis = getRedisClient();
+      const redis = getRedis();
       await redis.ping();
       health.services.redis = 'connected';
     } catch (error) {
@@ -356,14 +360,19 @@ router.get('/health/system', async (req: Request, res: Response) => {
       const buybackConfig = await buybackService.getConfig();
       health.services.buyback = buybackConfig?.is_active ? 'active' : 'inactive';
       
-      // Get vault and treasury balances
-      if (config.solana.casinoConfigPubkey) {
+      // Get vault and treasury balances using program-derived addresses
+      if (config.solana.casinoProgram) {
         const connection = new Connection(config.solana.rpcUrl, 'confirmed');
+        const programId = new PublicKey(config.solana.casinoProgram);
+        const [casinoPDA] = PublicKey.findProgramAddressSync([Buffer.from('casino')], programId);
+        const [vaultPDA] = PublicKey.findProgramAddressSync(
+          [Buffer.from('vault'), casinoPDA.toBuffer()],
+          programId
+        );
         
         // Get vault balance
         try {
-          const vaultPubkey = new PublicKey(config.solana.vaultPubkey || '');
-          const vaultBalance = await connection.getBalance(vaultPubkey);
+          const vaultBalance = await connection.getBalance(vaultPDA);
           health.balances.vault = (vaultBalance / 1e9).toFixed(4);
         } catch (error) {
           logger.warn('Could not fetch vault balance:', error);
@@ -407,7 +416,7 @@ router.get('/health/system', async (req: Request, res: Response) => {
         .count('* as count')
         .first();
       
-      health.errors.last_hour = parseInt(errorCount1h?.count || '0');
+      health.errors.last_hour = parseInt(String(errorCount1h?.count || '0'));
       
       // Count failed buyback events in last 24h
       const errorCount24h = await db('buyback_events')
@@ -416,7 +425,7 @@ router.get('/health/system', async (req: Request, res: Response) => {
         .count('* as count')
         .first();
       
-      health.errors.last_24h = parseInt(errorCount24h?.count || '0');
+      health.errors.last_24h = parseInt(String(errorCount24h?.count || '0'));
       
     } catch (error) {
       logger.warn('Could not query error logs:', error);

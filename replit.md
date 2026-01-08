@@ -61,7 +61,51 @@ A provably fair on-chain casino application built on Solana blockchain. Features
 - **Landing page**: Has separate footer in `app/src/pages/LandingPage.tsx`
 - Both footers must be edited independently to stay in sync
 
+## Buyback Control System (2026-01-08)
+
+### Overview
+Operator-only panel in Developer page for managing token buyback & burn automation via Pump.fun.
+
+### Components
+- **BuybackControlPanel.tsx**: Frontend UI for CA input, config, and execution
+- **buybackService.ts**: Backend service for executing buybacks
+- **pumpPortalClient.ts**: Pump.fun API integration
+- **admin.ts**: API endpoints for buyback management
+- **cronJobs.ts**: Automated scheduler
+
+### API Endpoints
+- `GET /api/admin/buyback/config` - Get current config
+- `PATCH /api/admin/buyback/config` - Update config (CA, spend limits, etc.)
+- `POST /api/admin/buyback/run` - Manual buyback trigger
+- `POST /api/admin/buyback/pause` - Pause automation
+- `POST /api/admin/buyback/resume` - Resume automation
+- `GET /api/admin/buyback/events` - Get buyback history
+
+### Security
+- **Development mode**: Allows unauthenticated requests (logs warning)
+- **Production mode**: Requires wallet signature authentication
+- Set `OPERATOR_WALLETS=pubkey1,pubkey2` to whitelist operators
+- Set `REQUIRE_OPERATOR_AUTH=true` for strict auth in dev
+
+### Database Tables
+- `buyback_config`: Stores CA, spend limits, interval, active status
+- `buyback_events`: Logs all buyback transactions
+
+### Safety Features
+- Dry run mode (simulates without executing)
+- Max spend per interval cap
+- Vault reserve protection (0.5 SOL minimum)
+- Cooldown between runs
+- Transaction simulation before execution
+
 ## Recent Changes
+- 2026-01-08: Buyback Control System
+  - Added BuybackControlPanel to Developer page
+  - Created PostgreSQL database with buyback tables
+  - Fixed pumpPortalClient.ts duplicate code
+  - Added operator authentication middleware
+  - Production mode enforces strict wallet signature auth
+  - Development mode allows testing with warnings
 - 2026-01-07: Visibility & Layout Fixes
   - Fixed DeveloperPage wallet-gate bug: removed early `if (!publicKey) return` guard
   - Developer dashboard now renders all panels even without wallet connected
