@@ -1,16 +1,19 @@
 import { FC } from 'react';
-import { Coins, Dices, GalleryVerticalEnd, Zap, Star, Play } from 'lucide-react';
+import { Zap, Star, Play } from 'lucide-react';
+import coinflipIcon from '../assets/game-icons/coinflip.jpg';
+import diceIcon from '../assets/game-icons/dice.jpg';
+import slotsIcon from '../assets/game-icons/slots.jpg';
 
 interface GameCardProps {
   title: string;
-  icon: React.ReactNode;
+  iconSrc: string;
   description: string;
   rtp: string;
   accent: 'accent' | 'gold' | 'error';
   onClick: () => void;
 }
 
-const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, onClick }) => {
+const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent, onClick }) => {
   const accentColors = {
     accent: {
       bg: 'bg-accent/20',
@@ -56,11 +59,12 @@ const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, on
       </div>
       
       <div className="relative p-6">
-        <div className={`relative w-20 h-20 rounded-2xl ${colors.bg} flex items-center justify-center ${colors.text} mb-6 group-hover:scale-110 transition-all duration-500`}>
-          <div className={`absolute inset-0 rounded-2xl ${colors.bg} blur-xl opacity-50 group-hover:opacity-80 transition-opacity`}></div>
-          <div className="relative">
-            {icon}
-          </div>
+        <div className="relative w-20 h-20 mb-6 group-hover:scale-110 transition-all duration-500">
+          <img 
+            src={iconSrc} 
+            alt={title} 
+            className="w-20 h-20 object-contain rounded-2xl"
+          />
         </div>
         
         <h3 className="text-2xl font-display font-bold text-white mb-2 group-hover:text-white/90 transition-colors">{title}</h3>
@@ -104,7 +108,7 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
     {
       id: 'coinflip' as const,
       title: 'CoinFlip',
-      icon: <Coins className="w-10 h-10" />,
+      iconSrc: coinflipIcon,
       description: 'Double or nothing. 50/50 odds powered by Switchboard VRF for provably fair results.',
       rtp: 'RTP 99%',
       accent: 'accent' as const,
@@ -112,7 +116,7 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
     {
       id: 'dice' as const,
       title: 'Neon Dice',
-      icon: <Dices className="w-10 h-10" />,
+      iconSrc: diceIcon,
       description: 'Set your win chance and multiplier. Classic slider dice with customizable risk.',
       rtp: 'RTP 99%',
       accent: 'gold' as const,
@@ -120,7 +124,7 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
     {
       id: 'slots' as const,
       title: 'Cyber Slots',
-      icon: <GalleryVerticalEnd className="w-10 h-10" />,
+      iconSrc: slotsIcon,
       description: 'Jackpot potential. Spin to match symbols and win big on the blockchain.',
       rtp: 'RTP 96.5%',
       accent: 'error' as const,
@@ -133,7 +137,7 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
         <GameCard
           key={game.id}
           title={game.title}
-          icon={game.icon}
+          iconSrc={game.iconSrc}
           description={game.description}
           rtp={game.rtp}
           accent={game.accent}
