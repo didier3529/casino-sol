@@ -8,6 +8,7 @@ import { Dice } from '../components/Dice';
 import { Slots } from '../components/Slots';
 import { SessionList } from '../components/SessionList';
 import { Leaderboard } from '../components/Leaderboard';
+import { WalletActivateCard } from '../components/WalletActivateCard';
 
 type GameType = 'coinflip' | 'dice' | 'slots' | null;
 
@@ -25,6 +26,10 @@ export const GamesPage: FC = () => {
             <p className="text-white/50 text-lg font-body">
               Select a game to start playing on-chain
             </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto mb-8">
+            <WalletActivateCard />
           </div>
 
           <div className="max-w-6xl mx-auto">
