@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { Sparkles, Zap, Shield, Wallet } from 'lucide-react';
+import { Zap, Shield, Wallet } from 'lucide-react';
+import powerButtonIcon from '../assets/power-button.png';
 
 export const WalletActivateCard: FC = () => {
   const { connected } = useWallet();
@@ -30,31 +31,14 @@ export const WalletActivateCard: FC = () => {
       <div className="relative p-8 md:p-10">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="relative">
-            <div 
-              className="w-24 h-24 rounded-2xl flex items-center justify-center"
+            <img 
+              src={powerButtonIcon} 
+              alt="Activate Casino" 
+              className="w-24 h-24 object-contain"
               style={{
-                background: 'linear-gradient(135deg, rgba(58, 243, 224, 0.15) 0%, rgba(255, 107, 234, 0.1) 50%, rgba(242, 185, 80, 0.15) 100%)',
-                border: '1px solid rgba(58, 243, 224, 0.3)',
-                boxShadow: '0 0 40px rgba(58, 243, 224, 0.2), inset 0 0 20px rgba(58, 243, 224, 0.1)',
+                filter: 'drop-shadow(0 0 20px rgba(242, 185, 80, 0.4))',
               }}
-            >
-              <Sparkles 
-                className="w-12 h-12" 
-                style={{ 
-                  color: '#F2B950',
-                  filter: 'drop-shadow(0 0 10px rgba(242, 185, 80, 0.5))',
-                }}
-              />
-            </div>
-            <div 
-              className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, #3AF3E0, #ff6bea)',
-                boxShadow: '0 0 15px rgba(58, 243, 224, 0.5)',
-              }}
-            >
-              <Zap className="w-3 h-3 text-background" />
-            </div>
+            />
           </div>
 
           <div className="flex-1 text-center md:text-left">
