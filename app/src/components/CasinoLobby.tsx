@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Zap, Star, Play } from 'lucide-react';
-import coinflipIcon from '../assets/game-icons/coinflip.jpg';
+import coinflipIcon from '../assets/game-icons/coinflip.png';
 import diceIcon from '../assets/game-icons/dice.png';
 import slotsIcon from '../assets/game-icons/slots.png';
 
@@ -10,12 +10,10 @@ interface GameCardProps {
   description: string;
   rtp: string;
   accent: 'accent' | 'gold' | 'error';
-  iconSize?: 'normal' | 'large';
   onClick: () => void;
 }
 
-const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent, iconSize = 'normal', onClick }) => {
-  const sizeClasses = iconSize === 'large' ? 'w-56 h-56' : 'w-40 h-40';
+const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent, onClick }) => {
   const accentColors = {
     accent: {
       bg: 'bg-accent/20',
@@ -61,11 +59,11 @@ const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent,
       </div>
       
       <div className="relative p-6">
-        <div className={`relative ${sizeClasses} mb-6 group-hover:scale-110 transition-all duration-500`}>
+        <div className="relative w-40 h-40 mb-6 group-hover:scale-110 transition-all duration-500">
           <img 
             src={iconSrc} 
             alt={title} 
-            className={`${sizeClasses} object-contain rounded-2xl`}
+            className="w-40 h-40 object-contain rounded-2xl"
           />
         </div>
         
@@ -114,7 +112,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Double or nothing. 50/50 odds powered by Switchboard VRF for provably fair results.',
       rtp: 'RTP 99%',
       accent: 'accent' as const,
-      iconSize: 'normal' as const,
     },
     {
       id: 'dice' as const,
@@ -123,7 +120,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Set your win chance and multiplier. Classic slider dice with customizable risk.',
       rtp: 'RTP 99%',
       accent: 'gold' as const,
-      iconSize: 'large' as const,
     },
     {
       id: 'slots' as const,
@@ -132,7 +128,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Jackpot potential. Spin to match symbols and win big on the blockchain.',
       rtp: 'RTP 96.5%',
       accent: 'error' as const,
-      iconSize: 'large' as const,
     },
   ];
 
@@ -146,7 +141,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
           description={game.description}
           rtp={game.rtp}
           accent={game.accent}
-          iconSize={game.iconSize}
           onClick={() => onSelectGame(game.id)}
         />
       ))}
