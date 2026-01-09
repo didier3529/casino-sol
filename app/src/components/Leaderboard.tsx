@@ -115,11 +115,9 @@ export const Leaderboard: FC = () => {
       </div>
 
       {leaderboard.length === 0 ? (
-        <div className="flex items-center justify-center gap-4 py-6 text-center">
+        <div className="flex items-center justify-center gap-3 py-6 w-full">
           <span className="text-2xl">🏆</span>
-          <div>
-            <p className="text-white/50 font-body text-sm">No players yet. Be the first to play!</p>
-          </div>
+          <p className="text-white/50 font-body text-sm">No players yet. Be the first to play!</p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-white/5">
