@@ -34,9 +34,11 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
           onClick={onGoHome}
           className="flex items-center gap-2.5 group cursor-pointer hover:opacity-80 transition-opacity"
         >
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-gold flex items-center justify-center">
-            <span className="text-black font-bold text-sm font-display">SV</span>
-          </div>
+          <img 
+            src="/assets/images/logo.jpg" 
+            alt="SOL VEGAS" 
+            className="w-8 h-8 object-contain"
+          />
           <span className="font-display font-semibold text-white text-base tracking-tight">SOL VEGAS</span>
         </button>
 

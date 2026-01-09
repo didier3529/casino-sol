@@ -121,9 +121,11 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
       <footer className="relative z-10 py-8 border-t border-white/5 bg-background-secondary/50">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-accent to-gold flex items-center justify-center">
-              <span className="text-black font-bold text-[10px] font-display">SV</span>
-            </div>
+            <img 
+              src="/assets/images/logo.jpg" 
+              alt="SOL VEGAS" 
+              className="w-6 h-6 object-contain"
+            />
             <span className="font-display font-medium text-white/60 text-xs">SOL VEGAS</span>
           </div>
 
