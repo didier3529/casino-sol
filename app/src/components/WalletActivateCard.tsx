@@ -30,15 +30,31 @@ export const WalletActivateCard: FC = () => {
 
       <div className="relative p-8 md:p-10">
         <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="relative">
+          <div className="relative cursor-pointer group">
+            <div 
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(242, 185, 80, 0.4) 0%, transparent 70%)',
+                animation: 'powerPulse 2s ease-in-out infinite',
+              }}
+            ></div>
             <img 
               src={powerButtonIcon} 
               alt="Activate Casino" 
-              className="w-36 h-36 object-contain"
+              className="w-36 h-36 object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
               style={{
-                filter: 'drop-shadow(0 0 20px rgba(242, 185, 80, 0.4))',
+                filter: 'drop-shadow(0 0 25px rgba(242, 185, 80, 0.6))',
+                animation: 'powerButtonPump 1.5s ease-in-out infinite',
               }}
             />
+            <div 
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gold/20 border border-gold/40"
+              style={{
+                animation: 'powerPulse 2s ease-in-out infinite',
+              }}
+            >
+              <span className="text-[10px] font-display font-bold text-gold uppercase tracking-wider whitespace-nowrap">Click to Activate</span>
+            </div>
           </div>
 
           <div className="flex-1 text-center md:text-left">

@@ -115,43 +115,92 @@ export const Leaderboard: FC = () => {
       </div>
 
       {leaderboard.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-white/40 font-body">No players yet. Be the first to play!</p>
+        <div className="relative overflow-hidden rounded-xl border border-white/5 bg-gradient-to-br from-background-secondary/50 to-background-tertiary/50 p-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-gold/5 opacity-50"></div>
+          <div className="relative flex flex-col items-center justify-center text-center">
+            <div 
+              className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+              style={{
+                background: 'linear-gradient(135deg, rgba(58, 243, 224, 0.1) 0%, rgba(242, 185, 80, 0.1) 100%)',
+                border: '1px solid rgba(58, 243, 224, 0.2)',
+              }}
+            >
+              <span className="text-4xl">🏆</span>
+            </div>
+            <h4 className="text-xl font-display font-bold text-white mb-2">Leaderboard Empty</h4>
+            <p className="text-white/40 font-body mb-4 max-w-sm">No players have competed yet. Be the first to play and claim the top spot!</p>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20">
+              <span className="text-xs font-display text-accent">🎮 Start playing to rank up</span>
+            </div>
+          </div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-xl border border-white/5">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Rank</th>
-                <th className="text-left py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Player</th>
-                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Net Profit</th>
-                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Games</th>
-                <th className="text-right py-3 px-4 text-xs font-display font-semibold text-white/50 uppercase tracking-wider">Win Rate</th>
+              <tr className="bg-gradient-to-r from-accent/5 via-transparent to-gold/5">
+                <th className="text-left py-4 px-5 text-xs font-display font-bold text-accent uppercase tracking-wider">Rank</th>
+                <th className="text-left py-4 px-5 text-xs font-display font-bold text-white/60 uppercase tracking-wider">Player</th>
+                <th className="text-right py-4 px-5 text-xs font-display font-bold text-white/60 uppercase tracking-wider">Net Profit</th>
+                <th className="text-right py-4 px-5 text-xs font-display font-bold text-white/60 uppercase tracking-wider">Games</th>
+                <th className="text-right py-4 px-5 text-xs font-display font-bold text-white/60 uppercase tracking-wider">Win Rate</th>
               </tr>
             </thead>
             <tbody>
               {leaderboard.map((entry) => (
                 <tr
                   key={entry.walletAddress}
-                  className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
+                  className={`border-b border-white/[0.03] hover:bg-white/[0.03] transition-all duration-200 ${
+                    entry.rank === 1 ? 'bg-gradient-to-r from-gold/10 via-gold/5 to-transparent' :
+                    entry.rank === 2 ? 'bg-gradient-to-r from-white/5 via-white/[0.02] to-transparent' :
+                    entry.rank === 3 ? 'bg-gradient-to-r from-amber-700/10 via-amber-700/5 to-transparent' : ''
+                  }`}
                 >
-                  <td className="py-3 px-4">
-                    <span className="text-sm font-display font-semibold text-white">#{entry.rank}</span>
+                  <td className="py-4 px-5">
+                    <div className="flex items-center gap-2">
+                      {entry.rank === 1 && <span className="text-lg">🥇</span>}
+                      {entry.rank === 2 && <span className="text-lg">🥈</span>}
+                      {entry.rank === 3 && <span className="text-lg">🥉</span>}
+                      <span className={`text-sm font-display font-bold ${
+                        entry.rank === 1 ? 'text-gold' :
+                        entry.rank === 2 ? 'text-white/80' :
+                        entry.rank === 3 ? 'text-amber-600' : 'text-white/60'
+                      }`}>#{entry.rank}</span>
+                    </div>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className="font-mono text-sm text-white/70">
-                      {formatWallet(entry.walletAddress)}
-                    </span>
+                  <td className="py-4 px-5">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                        style={{
+                          background: entry.rank <= 3 
+                            ? 'linear-gradient(135deg, rgba(58, 243, 224, 0.2), rgba(242, 185, 80, 0.2))'
+                            : 'rgba(255,255,255,0.05)',
+                          border: entry.rank <= 3 ? '1px solid rgba(58, 243, 224, 0.3)' : '1px solid rgba(255,255,255,0.1)',
+                        }}
+                      >
+                        {entry.walletAddress.slice(0, 2).toUpperCase()}
+                      </div>
+                      <span className="font-mono text-sm text-white/70">
+                        {formatWallet(entry.walletAddress)}
+                      </span>
+                    </div>
                   </td>
-                  <td className={`py-3 px-4 text-right font-mono font-semibold text-sm ${getProfitColor(entry.netProfit)}`}>
+                  <td className={`py-4 px-5 text-right font-mono font-bold text-sm ${getProfitColor(entry.netProfit)}`}>
                     {formatProfit(entry.netProfit)}
                   </td>
-                  <td className="py-3 px-4 text-right text-sm text-white/60 font-mono">
-                    {entry.totalGames}
+                  <td className="py-4 px-5 text-right">
+                    <span className="px-2 py-1 rounded-md bg-white/5 text-sm text-white/60 font-mono">
+                      {entry.totalGames}
+                    </span>
                   </td>
-                  <td className="py-3 px-4 text-right text-sm text-white/60 font-mono">
-                    {entry.winRate.toFixed(1)}%
+                  <td className="py-4 px-5 text-right">
+                    <span className={`px-2 py-1 rounded-md text-sm font-mono font-semibold ${
+                      entry.winRate >= 60 ? 'bg-success/10 text-success' :
+                      entry.winRate >= 40 ? 'bg-gold/10 text-gold' : 'bg-error/10 text-error'
+                    }`}>
+                      {entry.winRate.toFixed(1)}%
+                    </span>
                   </td>
                 </tr>
               ))}
