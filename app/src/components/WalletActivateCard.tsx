@@ -34,7 +34,7 @@ export const WalletActivateCard: FC = () => {
             <img 
               src={powerButtonIcon} 
               alt="Activate Casino" 
-              className="w-24 h-24 object-contain"
+              className="w-36 h-36 object-contain"
               style={{
                 filter: 'drop-shadow(0 0 20px rgba(242, 185, 80, 0.4))',
               }}
