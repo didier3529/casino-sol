@@ -122,7 +122,7 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2.5">
             <img 
-              src="/assets/images/logo.jpg" 
+              src="/assets/images/logo.png" 
               alt="SOL VEGAS" 
               className="w-6 h-6 object-contain"
             />

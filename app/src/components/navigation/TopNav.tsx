@@ -35,7 +35,7 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
           className="flex items-center gap-2.5 group cursor-pointer hover:opacity-80 transition-opacity"
         >
           <img 
-            src="/assets/images/logo.jpg" 
+            src="/assets/images/logo.png" 
             alt="SOL VEGAS" 
             className="w-8 h-8 object-contain"
           />
