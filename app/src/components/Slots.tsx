@@ -17,6 +17,7 @@ import {
   getSlotsWinProbability, 
   getSlotsPayoutMultiplier 
 } from '../utils/format';
+import slotsIcon from '../assets/game-icons/slots.png';
 
 function solToLamportsBn(sol: string): BN {
   const s = (sol || '').trim();
@@ -276,7 +277,10 @@ export const Slots: FC = () => {
     <>
       <div className="max-w-4xl mx-auto p-6">
         <div className="glass-effect rounded-2xl shadow-glow-lg p-8">
-          <h1 className="text-4xl font-bold text-center mb-8 gradient-text">🎰 Ultra Slots</h1>
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <img src={slotsIcon} alt="Cyber Slots" className="w-14 h-14 object-contain" />
+            <h1 className="text-3xl font-display font-bold text-white">Cyber Slots</h1>
+          </div>
           
           {!publicKey ? (
             <div className="text-center">

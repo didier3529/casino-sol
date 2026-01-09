@@ -17,7 +17,8 @@ import {
   getCoinflipWinProbability, 
   getCoinflipPayoutMultiplier 
 } from '../utils/format';
-import { Coins, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
+import coinflipIcon from '../assets/game-icons/coinflip.png';
 
 function solToLamportsBn(sol: string): BN {
   const s = (sol || '').trim();
@@ -278,10 +279,8 @@ export const CoinFlip: FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="flex items-center justify-center gap-3 mb-8">
-        <div className="w-12 h-12 rounded-xl bg-accent-muted flex items-center justify-center">
-          <Coins className="w-6 h-6 text-accent" />
-        </div>
+      <div className="flex items-center justify-center gap-4 mb-8">
+        <img src={coinflipIcon} alt="CoinFlip" className="w-14 h-14 object-contain" />
         <h1 className="text-3xl font-display font-bold text-white">CoinFlip</h1>
       </div>
       
