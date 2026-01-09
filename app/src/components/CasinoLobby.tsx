@@ -1,8 +1,16 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Zap, Star, Play } from 'lucide-react';
 import coinflipIcon from '../assets/game-icons/coinflip.png';
 import diceIcon from '../assets/game-icons/dice.png';
 import slotsIcon from '../assets/game-icons/slots.png';
+
+const gameIcons = [coinflipIcon, diceIcon, slotsIcon];
+export const preloadGameIcons = () => {
+  gameIcons.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+};
 
 interface GameCardProps {
   title: string;
@@ -14,6 +22,8 @@ interface GameCardProps {
 }
 
 const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent, onClick }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
   const accentColors = {
     accent: {
       bg: 'bg-accent/20',
@@ -60,10 +70,13 @@ const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent,
       
       <div className="relative p-6">
         <div className="relative w-40 h-40 mb-6 group-hover:scale-110 transition-all duration-500">
+          <div className={`absolute inset-0 rounded-2xl bg-white/5 animate-pulse ${imageLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`} />
           <img 
             src={iconSrc} 
             alt={title} 
-            className="w-40 h-40 object-contain rounded-2xl"
+            loading="eager"
+            onLoad={() => setImageLoaded(true)}
+            className={`w-40 h-40 object-contain rounded-2xl transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         </div>
         

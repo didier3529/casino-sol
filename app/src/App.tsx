@@ -11,6 +11,9 @@ import { PROGRAM_ID, NETWORK } from './utils/constants';
 import { useCasino } from './hooks/useCasino';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CheckCircle, Vault, Landmark, ExternalLink, Flame, Clock, Shield } from 'lucide-react';
+import { preloadGameIcons } from './components/CasinoLobby';
+
+preloadGameIcons();
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
