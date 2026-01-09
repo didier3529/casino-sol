@@ -115,23 +115,10 @@ export const Leaderboard: FC = () => {
       </div>
 
       {leaderboard.length === 0 ? (
-        <div className="relative overflow-hidden rounded-xl border border-white/5 bg-gradient-to-br from-background-secondary/50 to-background-tertiary/50 p-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-gold/5 opacity-50"></div>
-          <div className="relative flex flex-col items-center justify-center text-center">
-            <div 
-              className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
-              style={{
-                background: 'linear-gradient(135deg, rgba(58, 243, 224, 0.1) 0%, rgba(242, 185, 80, 0.1) 100%)',
-                border: '1px solid rgba(58, 243, 224, 0.2)',
-              }}
-            >
-              <span className="text-4xl">🏆</span>
-            </div>
-            <h4 className="text-xl font-display font-bold text-white mb-2">Leaderboard Empty</h4>
-            <p className="text-white/40 font-body mb-4 max-w-sm">No players have competed yet. Be the first to play and claim the top spot!</p>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20">
-              <span className="text-xs font-display text-accent">🎮 Start playing to rank up</span>
-            </div>
+        <div className="flex items-center justify-center gap-4 py-6 text-center">
+          <span className="text-2xl">🏆</span>
+          <div>
+            <p className="text-white/50 font-body text-sm">No players yet. Be the first to play!</p>
           </div>
         </div>
       ) : (
