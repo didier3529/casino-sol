@@ -150,7 +150,7 @@ code, pre {
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, var(--accent) 0%, #2DD4C8 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, #ff6bea 50%, var(--gold) 100%);
     color: #000;
     font-family: var(--font-display);
     font-weight: 600;
@@ -159,12 +159,22 @@ code, pre {
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 0 20px rgba(58, 243, 224, 0.4), 0 0 40px rgba(255, 107, 234, 0.2);
+    animation: neonButtonPulse 2s ease-in-out infinite;
   }
 
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 40px var(--accent-glow);
+    box-shadow: 0 0 30px rgba(58, 243, 224, 0.6), 0 0 50px rgba(255, 107, 234, 0.4);
+  }
+
+  @keyframes neonButtonPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(58, 243, 224, 0.4), 0 0 40px rgba(255, 107, 234, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 28px rgba(58, 243, 224, 0.6), 0 0 50px rgba(255, 107, 234, 0.35);
+    }
   }
 
   .btn-primary:active {

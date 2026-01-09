@@ -64,7 +64,7 @@ export const LandingPage: FC<LandingPageProps> = ({ onEnterApp, onNavigateToTab 
 
           <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             The Future of
-            <span className="block text-gradient">On-Chain Gaming</span>
+            <span className="block neon-text">On-Chain Gaming</span>
           </h1>
 
           <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-8 leading-relaxed font-body animate-fade-in-up" style={{ animationDelay: '0.2s' }}>

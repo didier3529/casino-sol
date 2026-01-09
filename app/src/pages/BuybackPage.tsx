@@ -89,21 +89,26 @@ export const BuybackPage: FC = () => {
 
       <div className="glass-card p-6">
         <h3 className="text-lg font-display font-semibold text-white mb-5 flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-success" />
+          <ShieldCheck className="w-5 h-5 text-accent" />
           <span>Safety Features</span>
         </h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { title: 'Protected Vault', desc: '0.5 SOL always reserved for gameplay' },
-            { title: 'Transparent', desc: 'All transactions logged and auditable' },
-            { title: 'Kill Switch', desc: 'Can be paused by casino authority' },
-            { title: 'Price Protection', desc: 'Slippage limits and price validation' },
-          ].map((item, i) => (
-            <div key={i} className="surface-elevated p-4">
-              <div className="text-success font-display font-medium text-sm mb-1">{item.title}</div>
-              <div className="text-xs text-white/40 font-body">{item.desc}</div>
-            </div>
-          ))}
+          <div className="surface-elevated p-4">
+            <div className="text-accent font-display font-semibold text-sm mb-1">Protected Vault</div>
+            <div className="text-xs text-white/40 font-body">0.5 SOL always reserved for gameplay</div>
+          </div>
+          <div className="surface-elevated p-4">
+            <div className="text-gold font-display font-semibold text-sm mb-1">Transparent</div>
+            <div className="text-xs text-white/40 font-body">All transactions logged and auditable</div>
+          </div>
+          <div className="surface-elevated p-4">
+            <div className="text-error font-display font-semibold text-sm mb-1">Kill Switch</div>
+            <div className="text-xs text-white/40 font-body">Can be paused by casino authority</div>
+          </div>
+          <div className="surface-elevated p-4">
+            <div className="text-success font-display font-semibold text-sm mb-1">Price Protection</div>
+            <div className="text-xs text-white/40 font-body">Slippage limits and price validation</div>
+          </div>
         </div>
       </div>
 
