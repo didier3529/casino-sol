@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Coins, Dices, GalleryVerticalEnd, Clock, Zap, Star, Play } from 'lucide-react';
+import { Coins, Dices, GalleryVerticalEnd, Zap, Star, Play } from 'lucide-react';
 
 interface GameCardProps {
   title: string;
@@ -7,12 +7,10 @@ interface GameCardProps {
   description: string;
   rtp: string;
   accent: 'accent' | 'gold' | 'error';
-  comingSoon?: boolean;
-  featured?: boolean;
   onClick: () => void;
 }
 
-const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, comingSoon, featured, onClick }) => {
+const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, onClick }) => {
   const accentColors = {
     accent: {
       bg: 'bg-accent/20',
@@ -47,26 +45,15 @@ const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, co
 
   return (
     <div 
-      className={`relative overflow-hidden rounded-2xl border ${colors.border} transition-all duration-500 group ${
-        comingSoon ? 'opacity-70' : 'cursor-pointer'
-      } ${colors.glow} bg-gradient-to-br from-background-secondary to-background-tertiary`}
-      onClick={comingSoon ? undefined : onClick}
+      className={`relative overflow-hidden rounded-2xl border ${colors.border} transition-all duration-500 group cursor-pointer ${colors.glow} bg-gradient-to-br from-background-secondary to-background-tertiary`}
+      onClick={onClick}
     >
       <div className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b ${colors.gradient} opacity-50`}></div>
       
-      {featured && !comingSoon && (
-        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-accent/20 rounded-full border border-accent/30">
-          <Zap className="w-3 h-3 text-accent" />
-          <span className="text-[10px] font-display font-bold text-accent uppercase tracking-wider">Live</span>
-        </div>
-      )}
-      
-      {comingSoon && (
-        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-white/10 rounded-full border border-white/20">
-          <Clock className="w-3 h-3 text-white/60" />
-          <span className="text-[10px] font-display font-semibold text-white/60 uppercase tracking-wider">Soon</span>
-        </div>
-      )}
+      <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-accent/20 rounded-full border border-accent/30">
+        <Zap className="w-3 h-3 text-accent" />
+        <span className="text-[10px] font-display font-bold text-accent uppercase tracking-wider">Live</span>
+      </div>
       
       <div className="relative p-6">
         <div className={`relative w-20 h-20 rounded-2xl ${colors.bg} flex items-center justify-center ${colors.text} mb-6 group-hover:scale-110 transition-all duration-500`}>
@@ -93,33 +80,16 @@ const GameCard: FC<GameCardProps> = ({ title, icon, description, rtp, accent, co
         </div>
 
         <button 
-          className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-display font-bold transition-all duration-300 ${
-            comingSoon 
-              ? 'bg-white/5 text-white/30 cursor-not-allowed' 
-              : `${colors.btnBg} ${colors.btnText} hover:opacity-90 hover:scale-[1.02]`
-          }`}
-          disabled={comingSoon}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-display font-bold transition-all duration-300 text-background hover:scale-[1.02]"
+          style={{
+            background: 'linear-gradient(135deg, #3AF3E0 0%, #ff6bea 50%, #F2B950 100%)',
+            boxShadow: '0 0 20px rgba(58, 243, 224, 0.4), 0 0 40px rgba(255, 107, 234, 0.2)',
+            animation: 'neonButtonPulse 2s ease-in-out infinite',
+          }}
         >
-          {comingSoon ? (
-            <>
-              <Clock className="w-4 h-4" />
-              Coming Soon
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4" />
-              Play Now
-            </>
-          )}
+          <Play className="w-4 h-4" />
+          Play Now
         </button>
-        
-        {!comingSoon && (
-          <div className="mt-4 pt-4 border-t border-white/5">
-            <div className="text-[11px] text-white/30 font-body text-center">
-              Video trailer coming soon
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -138,8 +108,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Double or nothing. 50/50 odds powered by Switchboard VRF for provably fair results.',
       rtp: 'RTP 99%',
       accent: 'accent' as const,
-      comingSoon: false,
-      featured: true,
     },
     {
       id: 'dice' as const,
@@ -148,8 +116,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Set your win chance and multiplier. Classic slider dice with customizable risk.',
       rtp: 'RTP 99%',
       accent: 'gold' as const,
-      comingSoon: true,
-      featured: false,
     },
     {
       id: 'slots' as const,
@@ -158,8 +124,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
       description: 'Jackpot potential. Spin to match symbols and win big on the blockchain.',
       rtp: 'RTP 96.5%',
       accent: 'error' as const,
-      comingSoon: true,
-      featured: false,
     },
   ];
 
@@ -173,8 +137,6 @@ export const CasinoLobby: FC<CasinoLobbyProps> = ({ onSelectGame }) => {
           description={game.description}
           rtp={game.rtp}
           accent={game.accent}
-          comingSoon={game.comingSoon}
-          featured={game.featured}
           onClick={() => onSelectGame(game.id)}
         />
       ))}
