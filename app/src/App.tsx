@@ -10,7 +10,9 @@ import { HowItWorksPage } from './pages/HowItWorksPage';
 import { PROGRAM_ID, NETWORK } from './utils/constants';
 import { useCasino } from './hooks/useCasino';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CheckCircle, Vault, Landmark, ExternalLink, Shield } from 'lucide-react';
+import { CheckCircle, Vault, Landmark, ExternalLink, Flame, Clock, Shield } from 'lucide-react';
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 type AppView = 'landing' | 'app';
 
@@ -19,6 +21,8 @@ const StatusBar: FC = () => {
   const { connected } = useWallet();
   const [vaultBalance, setVaultBalance] = useState<number | null>(null);
   const [treasuryBalance, setTreasuryBalance] = useState<number | null>(null);
+  const [totalBuyback, setTotalBuyback] = useState<number | null>(null);
+  const [nextBuybackIn, setNextBuybackIn] = useState<number | null>(null);
 
   useEffect(() => {
     const loadBalances = async () => {
@@ -44,6 +48,72 @@ const StatusBar: FC = () => {
     return () => clearInterval(interval);
   }, [program, connected]);
 
+  useEffect(() => {
+    const loadBuybackData = async () => {
+      try {
+        const [statsRes, configRes] = await Promise.all([
+          fetch(`${BACKEND_URL}/api/admin/buyback/stats`),
+          fetch(`${BACKEND_URL}/api/admin/buyback/config`),
+        ]);
+        
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          if (stats.success && stats.data) {
+            setTotalBuyback(stats.data.totalSolSpent || 0);
+          }
+        }
+        
+        if (configRes.ok) {
+          const config = await configRes.json();
+          if (config.success && config.data) {
+            const { last_run_at, interval_seconds, is_active } = config.data;
+            if (is_active && last_run_at && interval_seconds) {
+              const lastRun = new Date(last_run_at).getTime();
+              const nextRun = lastRun + (interval_seconds * 1000);
+              const remaining = Math.max(0, Math.floor((nextRun - Date.now()) / 1000));
+              setNextBuybackIn(remaining);
+            } else {
+              setNextBuybackIn(null);
+            }
+          } else {
+            setNextBuybackIn(null);
+          }
+        } else {
+          setNextBuybackIn(null);
+        }
+      } catch {
+        // Backend might not be running - silently fail
+      }
+    };
+    
+    loadBuybackData();
+    const interval = setInterval(loadBuybackData, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (nextBuybackIn === null || nextBuybackIn <= 0) return;
+    
+    const timer = setInterval(() => {
+      setNextBuybackIn(prev => {
+        if (prev === null || prev <= 0) return prev;
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [nextBuybackIn]);
+
+  const formatCountdown = (seconds: number): string => {
+    if (seconds <= 0) return 'Soon';
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hours > 0) return `${hours}h ${mins}m`;
+    if (mins > 0) return `${mins}m ${secs}s`;
+    return `${secs}s`;
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-4 mb-8">
       <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-success/20 bg-success/5">
@@ -65,6 +135,22 @@ const StatusBar: FC = () => {
           <span className="text-xs text-white/50 font-display">Treasury:</span>
           <span className="text-xs font-mono text-white font-medium">
             {treasuryBalance !== null ? `${treasuryBalance.toFixed(4)} SOL` : '---'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#ff6bea]/10 to-[#F2B950]/10 border border-[#ff6bea]/20">
+          <Flame className="w-3.5 h-3.5 text-[#ff6bea]" />
+          <span className="text-xs text-white/50 font-display">Burned:</span>
+          <span className="text-xs font-mono text-[#ff6bea] font-medium">
+            {totalBuyback !== null ? `${totalBuyback.toFixed(2)} SOL` : '---'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-accent/10 to-[#3AF3E0]/5 border border-accent/20">
+          <Clock className="w-3.5 h-3.5 text-accent animate-pulse" />
+          <span className="text-xs text-white/50 font-display">Next Burn:</span>
+          <span className="text-xs font-mono text-accent font-medium">
+            {nextBuybackIn !== null ? formatCountdown(nextBuybackIn) : '---'}
           </span>
         </div>
       </div>
