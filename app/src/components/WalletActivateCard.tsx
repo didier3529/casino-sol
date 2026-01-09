@@ -47,14 +47,6 @@ export const WalletActivateCard: FC = () => {
                 animation: 'powerButtonPump 1.5s ease-in-out infinite',
               }}
             />
-            <div 
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gold/20 border border-gold/40"
-              style={{
-                animation: 'powerPulse 2s ease-in-out infinite',
-              }}
-            >
-              <span className="text-[10px] font-display font-bold text-gold uppercase tracking-wider whitespace-nowrap">Click to Activate</span>
-            </div>
           </div>
 
           <div className="flex-1 text-center md:text-left">
