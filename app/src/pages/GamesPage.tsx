@@ -1,7 +1,5 @@
 import { FC, useState } from 'react';
 import { ArrowLeft, Gem, Trophy, ShieldCheck } from 'lucide-react';
-import { InitializeCasino } from '../components/InitializeCasino';
-import { CasinoInfo } from '../components/CasinoInfo';
 import { CasinoLobby } from '../components/CasinoLobby';
 import { CoinFlip } from '../components/CoinFlip';
 import { Dice } from '../components/Dice';
@@ -28,10 +26,6 @@ export const GamesPage: FC = () => {
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto mb-8">
-            <WalletActivateCard />
-          </div>
-
           <div className="max-w-6xl mx-auto">
             <div className="glass-card p-6">
               <h2 className="text-xl font-display font-semibold text-white mb-5 flex items-center gap-2">
@@ -43,13 +37,7 @@ export const GamesPage: FC = () => {
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <div className="glass-card p-6">
-              <CasinoInfo />
-            </div>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <InitializeCasino />
+            <WalletActivateCard />
           </div>
 
           <div className="max-w-6xl mx-auto">
