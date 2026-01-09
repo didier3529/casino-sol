@@ -1,8 +1,32 @@
 # BUYBACK & BURN SYSTEM
 
 **Purpose:** Comprehensive guide to the automated token buyback and burn system  
-**Last Updated:** 2025-12-31  
+**Last Updated:** 2026-01-08  
 **Status:** ✅ Implementation complete, ready for mainnet beta
+
+---
+
+## Recent Updates (2026-01-08)
+
+### BuybackControlPanel Added to Developer Page
+- **Frontend UI** for operators to manage buyback directly from the Developer dashboard
+- **CA Input Panel**: Quick paste workflow for token contract address
+- **Manual Execute**: Trigger buybacks on-demand with one click
+- **Toggle Automation**: Pause/resume automated buybacks
+- **Stats Display**: Live view of buyback statistics
+- **History Log**: Recent buyback events with transaction links
+
+### Operator Authentication
+- **Development mode**: Allows unauthenticated requests (logs warning)
+- **Production mode** (`NODE_ENV=production`): Enforces wallet signature authentication
+- Set `OPERATOR_WALLETS=pubkey1,pubkey2` to whitelist operators
+- Set `REQUIRE_OPERATOR_AUTH=true` for strict auth even in development
+
+### Security Middleware
+- `operatorAuthMiddleware`: Full nacl signature verification
+- `developmentOnlyAuth`: Strict in production, permissive in dev
+- Timestamp validation to prevent replay attacks (5-minute window)
+- Message format: `"{method}:{url}:{timestamp}"`
 
 ---
 
