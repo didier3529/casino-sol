@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Zap, Star, Play } from 'lucide-react';
 import coinflipIcon from '../assets/game-icons/coinflip.jpg';
-import diceIcon from '../assets/game-icons/dice.jpg';
-import slotsIcon from '../assets/game-icons/slots.jpg';
+import diceIcon from '../assets/game-icons/dice.png';
+import slotsIcon from '../assets/game-icons/slots.png';
 
 interface GameCardProps {
   title: string;
