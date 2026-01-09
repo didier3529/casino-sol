@@ -280,7 +280,7 @@ export const CoinFlip: FC = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-center gap-4 mb-8">
-        <img src={coinflipIcon} alt="CoinFlip" className="w-14 h-14 object-contain" />
+        <img src={coinflipIcon} alt="CoinFlip" className="w-28 h-28 object-contain" />
         <h1 className="text-3xl font-display font-bold text-white">CoinFlip</h1>
       </div>
       
