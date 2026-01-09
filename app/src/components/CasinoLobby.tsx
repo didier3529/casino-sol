@@ -59,11 +59,11 @@ const GameCard: FC<GameCardProps> = ({ title, iconSrc, description, rtp, accent,
       </div>
       
       <div className="relative p-6">
-        <div className="relative w-20 h-20 mb-6 group-hover:scale-110 transition-all duration-500">
+        <div className="relative w-40 h-40 mb-6 group-hover:scale-110 transition-all duration-500">
           <img 
             src={iconSrc} 
             alt={title} 
-            className="w-20 h-20 object-contain rounded-2xl"
+            className="w-40 h-40 object-contain rounded-2xl"
           />
         </div>
         
