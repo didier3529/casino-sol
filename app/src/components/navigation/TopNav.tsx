@@ -37,9 +37,9 @@ export const TopNav: FC<TopNavProps> = ({ activeTab, onTabChange, onGoHome, curr
           <img 
             src="/assets/images/logo.png" 
             alt="SOL VEGAS" 
-            className="w-8 h-8 object-contain"
+            className="w-10 h-10 object-contain"
           />
-          <span className="font-display font-semibold text-white text-base tracking-tight">SOL VEGAS</span>
+          <span className="font-display font-bold text-lg tracking-tight neon-text">SOL VEGAS</span>
         </button>
 
         <div className="flex-1 flex items-center justify-center gap-1">

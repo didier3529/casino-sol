@@ -141,9 +141,9 @@ const App: FC = () => {
                   <img 
                     src="/assets/images/logo.png" 
                     alt="SOL VEGAS" 
-                    className="w-6 h-6 object-contain"
+                    className="w-8 h-8 object-contain"
                   />
-                  <span className="font-display font-medium text-white/60 text-xs">SOL VEGAS</span>
+                  <span className="font-display font-semibold text-sm neon-text">SOL VEGAS</span>
                 </div>
 
                 <div className="text-xs text-white/30 font-body">
